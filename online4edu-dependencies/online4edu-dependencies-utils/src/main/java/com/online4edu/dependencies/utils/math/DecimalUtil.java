@@ -26,8 +26,6 @@ public class DecimalUtil {
 
     public static BigDecimal[] weightsApportion(@Nonnull BigDecimal pie, @Nonnull BigDecimal[] proportions, boolean retainDecimal) {
 
-        assert pie.compareTo(BigDecimal.ZERO) >= 0 && proportions.length > 0;
-
         // DEFAULT: 保留两位小数
         int scale = retainDecimal ? 2 : 0;
         BigDecimal[] weights = new BigDecimal[proportions.length];
@@ -47,7 +45,6 @@ public class DecimalUtil {
 
         int lastNotZeroIndex = -1;
         for (int i = 0; i < proportions.length - 1; i++) {
-
 
             weights[i] = proportions[i]
                     .divide(totalProportion, MathContext.DECIMAL32) // 保留7位小数
@@ -121,7 +118,10 @@ public class DecimalUtil {
      */
     public static BigDecimal divide(@Nonnull BigDecimal... decimals) {
         // Use: IEEE 754R
-        return Arrays.stream(decimals).filter(Objects::nonNull).reduce((b1, b2) -> b1.divide(b2, MathContext.DECIMAL32)).orElse(BigDecimal.ZERO);
+        return Arrays.stream(decimals)
+                .filter(Objects::nonNull)
+                .reduce((b1, b2) -> b1.divide(b2, MathContext.DECIMAL32))
+                .orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -219,7 +219,7 @@ public class DecimalUtil {
             locale = Locale.getDefault();
         }
 
-        NumberFormat instance = DecimalFormat.getCurrencyInstance(locale);
+        NumberFormat instance = NumberFormat.getCurrencyInstance(locale);
 
         return instance.format(money);
     }
@@ -242,5 +242,8 @@ public class DecimalUtil {
     public static void main(String[] args) {
         String multiply = moneyWithCurrency(new BigDecimal("1"), null);
         System.out.println(multiply);
+
+        BigDecimal divide = divide(2, new BigDecimal("10"), new BigDecimal("3"));
+        System.out.println(divide.toPlainString());
     }
 }
