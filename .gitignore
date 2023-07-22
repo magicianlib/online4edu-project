@@ -91,3 +91,6 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
+# flatten-maven-plugin
+.flattened-pom.xml
+/**/.flattened-pom.xml
