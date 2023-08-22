@@ -44,16 +44,16 @@ public class DecimalUtil {
         BigDecimal allocated = BigDecimal.ZERO;
 
         int lastNotZeroIndex = -1;
-        for (int i = 0; i < proportions.length - 1; i++) {
+        for (int i = 0; i < (proportions.length - 1); i++) {
 
             weights[i] = proportions[i]
-                    .divide(totalProportion, MathContext.DECIMAL32) // 保留7位小数
+                    .divide(totalProportion, MathContext.DECIMAL32) // 防止无限循环
                     .multiply(pie)
-                    .setScale(scale, RoundingMode.HALF_UP); // 保留 scale 小数
+                    .setScale(scale, RoundingMode.DOWN); // 保留 scale 小数, 多余的直接舍去
 
             allocated = allocated.add(weights[i]);
 
-            if (proportions[i].compareTo(BigDecimal.ZERO) > 0) {
+            if (proportions[i].compareTo(BigDecimal.ZERO) > 0) { // 最后一次不等于空的索引
                 lastNotZeroIndex = i;
             }
         }
@@ -245,5 +245,11 @@ public class DecimalUtil {
 
         BigDecimal divide = divide(2, new BigDecimal("10"), new BigDecimal("3"));
         System.out.println(divide.toPlainString());
+
+        BigDecimal we[] = {new BigDecimal("190"),new BigDecimal("270"),new BigDecimal("270"),new BigDecimal("1")};
+        BigDecimal[] bigDecimals = weightsApportion(new BigDecimal("0.37"), we, true);
+        for (BigDecimal bigDecimal : bigDecimals) {
+            System.out.println(bigDecimal);
+        }
     }
 }
