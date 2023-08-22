@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Decimal Util
@@ -30,12 +32,13 @@ public class DecimalUtil {
         int scale = retainDecimal ? 2 : 0;
         BigDecimal[] weights = new BigDecimal[proportions.length];
 
+        pie = zeroIfNull(pie);
         if (pie.compareTo(BigDecimal.ZERO) == 0) {
             Arrays.fill(weights, BigDecimal.ZERO);
             return weights;
         }
 
-        BigDecimal totalProportion = Arrays.stream(proportions).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalProportion = Arrays.stream(proportions).map(DecimalUtil::zeroIfNull).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (totalProportion.compareTo(BigDecimal.ZERO) == 0) {
             throw new ArithmeticException("分摊权重未设置");
@@ -46,7 +49,7 @@ public class DecimalUtil {
         int lastNotZeroIndex = -1;
         for (int i = 0; i < (proportions.length - 1); i++) {
 
-            weights[i] = proportions[i]
+            weights[i] = zeroIfNull(proportions[i])
                     .divide(totalProportion, MathContext.DECIMAL32) // 防止无限循环
                     .multiply(pie)
                     .setScale(scale, RoundingMode.DOWN); // 保留 scale 小数, 多余的直接舍去
@@ -82,7 +85,7 @@ public class DecimalUtil {
      * @return VAL or ZERO
      */
     public static BigDecimal add(@Nonnull BigDecimal... numerical) {
-        return Arrays.stream(numerical).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return Arrays.stream(numerical).map(DecimalUtil::zeroIfNull).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
@@ -93,12 +96,11 @@ public class DecimalUtil {
      * @return VAL
      */
     public static BigDecimal subtract(@Nullable BigDecimal minuend, @Nonnull BigDecimal... subtraction) {
-        BigDecimal val = Optional.ofNullable(minuend).orElse(BigDecimal.ZERO);
-        return val.subtract(add(subtraction));
+        return zeroIfNull(minuend).subtract(add(subtraction));
     }
 
     public static BigDecimal multiply(@Nonnull BigDecimal... decimals) {
-        return Arrays.stream(decimals).reduce(BigDecimal.ONE, BigDecimal::multiply);
+        return Arrays.stream(decimals).map(DecimalUtil::zeroIfNull).reduce(BigDecimal.ONE, BigDecimal::multiply);
     }
 
     public static BigDecimal multiply(int scale, @Nonnull BigDecimal... decimals) {
@@ -175,14 +177,14 @@ public class DecimalUtil {
      * molecule/denominator * 100
      * </p>
      *
-     * @param molecule    分子
+     * @param numerator   分子
      * @param denominator 分母
      * @return percentage 百分比(保留两位小数)
      */
-    public static BigDecimal percentage(@Nonnull BigDecimal molecule, @Nonnull BigDecimal denominator) {
+    public static BigDecimal percentage(@Nonnull BigDecimal numerator, @Nonnull BigDecimal denominator) {
 
         // Use: IEEE 754R
-        return molecule.divide(denominator, MathContext.DECIMAL32)
+        return numerator.divide(denominator, MathContext.DECIMAL32)
                 .multiply(new BigDecimal("100"))
                 .setScale(2, RoundingMode.HALF_DOWN);
     }
@@ -238,6 +240,33 @@ public class DecimalUtil {
         return decimalFormat.format(decimal);
     }
 
+    public static BigDecimal zeroIfNull(BigDecimal val) {
+        return optional(val, BigDecimal.ZERO);
+    }
+
+    public static Integer zeroIfNull(Integer val) {
+        return optional(val, 0);
+    }
+
+    public static Long zeroIfNull(Long val) {
+        return optional(val, 0L);
+    }
+
+    public static Float zeroIfNull(Float val) {
+        return optional(val, 0F);
+    }
+
+    public static Double zeroIfNull(Double val) {
+        return optional(val, 0D);
+    }
+
+    public static Boolean falseIfNull(Boolean val) {
+        return optional(val, false);
+    }
+
+    private static <T> T optional(T t, T defaultValue) {
+        return Optional.ofNullable(t).orElse(defaultValue);
+    }
 
     public static void main(String[] args) {
         String multiply = moneyWithCurrency(new BigDecimal("1"), null);
@@ -246,9 +275,9 @@ public class DecimalUtil {
         BigDecimal divide = divide(2, new BigDecimal("10"), new BigDecimal("3"));
         System.out.println(divide.toPlainString());
 
-        BigDecimal we[] = {new BigDecimal("190"),new BigDecimal("270"),new BigDecimal("270"),new BigDecimal("1")};
-        BigDecimal[] bigDecimals = weightsApportion(new BigDecimal("0.37"), we, true);
-        for (BigDecimal bigDecimal : bigDecimals) {
+        BigDecimal[] weights = {new BigDecimal("190"), new BigDecimal("270"), new BigDecimal("270"), new BigDecimal("1")};
+        BigDecimal[] result = weightsApportion(new BigDecimal("0.37"), weights, true);
+        for (BigDecimal bigDecimal : result) {
             System.out.println(bigDecimal);
         }
     }
