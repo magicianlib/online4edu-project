@@ -12,12 +12,11 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import com.online4edu.dependencies.utils.datetime.DateTimePattern;
+import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Jackson Config
@@ -37,19 +36,16 @@ public final class JacksonConfig {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
 
         // LocalTime 序列化和反序列化配置
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DateTimePattern.TIME_PATTERN);
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateFormatUtil.FORMAT_TIME));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateFormatUtil.FORMAT_TIME));
 
         // LocalDate 序列化和反序列化配置
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DateTimePattern.DATE_PATTERN);
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateFormatter));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateFormatter));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateFormatUtil.FORMAT_DATE));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateFormatUtil.FORMAT_DATE));
 
         // LocalDateTime 序列化和反序列化配置
-        DateTimeFormatter datetimeFormatter = DateTimeFormatter.ofPattern(DateTimePattern.DATE_TIME_PATTERN);
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(datetimeFormatter));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(datetimeFormatter));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateFormatUtil.FORMAT_DATETIME));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateFormatUtil.FORMAT_DATETIME));
 
         objectMapper.registerModule(javaTimeModule);
     }
@@ -76,7 +72,7 @@ public final class JacksonConfig {
 
         SimpleModule module = new SimpleModule();
         module.addSerializer(type, serializer);
-        
+
         objectMapper.registerModule(module);
     }
 

@@ -14,7 +14,8 @@
 
     <modules>
         <module>online4edu-dependencies-mybatis</module>
-        <module>online4edu-dependencies-utils</module>
         <module>online4edu-dependencies-mybatis-generator</module>
+        <module>online4edu-dependencies-utils</module>
+        <module>online4edu-dependencies-performance</module>
     </modules>
 </project>

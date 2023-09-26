@@ -3,12 +3,10 @@ package com.online4edu.dependencies.utils.jackson.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import com.online4edu.dependencies.utils.datetime.DateTimePattern;
+import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Jackson 自定义时间反序列化扩展
@@ -20,6 +18,6 @@ public class LocalTimeJsonSerializer extends JsonSerializer<LocalTime> {
 
     @Override
     public void serialize(LocalTime time, JsonGenerator generator, SerializerProvider serializers) throws IOException {
-        generator.writeString(time.format(DateTimeFormatter.ofPattern(DateTimePattern.TIME_PATTERN, Locale.CHINA)));
+        generator.writeString(time.format(DateFormatUtil.FORMAT_TIME));
     }
 }

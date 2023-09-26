@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.online4edu.dependencies.utils.datetime.DateTimePattern;
+import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 import com.online4edu.dependencies.utils.exception.DeserializationException;
 import com.online4edu.dependencies.utils.exception.SerializationException;
 import com.online4edu.dependencies.utils.jackson.serializer.BigDecimalAsStringJsonSerializer;
@@ -51,8 +51,8 @@ public final class JacksonUtil {
         XML.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 
         // java.util.Date 日期格式 处理
-        MAPPER.setDateFormat(new SimpleDateFormat(DateTimePattern.DATE_TIME_PATTERN));
-        XML.setDateFormat(new SimpleDateFormat(DateTimePattern.DATE_TIME_PATTERN));
+        MAPPER.setDateFormat(new SimpleDateFormat(DateFormatUtil.PATTERN_DATETIME));
+        XML.setDateFormat(new SimpleDateFormat(DateFormatUtil.PATTERN_DATETIME));
 
         // java.time.* 日期格式处理
         JacksonConfig.configureObjectMapper4Jsr310(MAPPER);
