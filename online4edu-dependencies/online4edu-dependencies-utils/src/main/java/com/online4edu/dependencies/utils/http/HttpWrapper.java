@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.online4edu.dependencies.utils.jackson.JacksonUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -42,6 +44,10 @@ class HttpWrapper {
 
     private HttpWrapper() {
     }
+
+    private final Log log = LogFactory.getLog(getClass());
+
+    private static final HttpWrapper INSTANCE = new HttpWrapper();
 
     static final List<Class<?>> ALLOW_FILE_CONTENT_TYPE = new ArrayList<>();
 
@@ -97,6 +103,7 @@ class HttpWrapper {
      * Create Get Http
      */
     static HttpGet createGet(String url) {
+        INSTANCE.log.info("GET " + url);
         return new HttpGet(url);
     }
 
@@ -115,11 +122,13 @@ class HttpWrapper {
             url = url + "?";
         }
 
+        INSTANCE.log.info("GET " + url + ", Payload:" + keyValChain);
         return new HttpGet(url + keyValChain);
     }
 
     static HttpGet createGet(String url, Map<String, Object> params) {
         if (params == null || params.isEmpty()) {
+            INSTANCE.log.info("GET " + url);
             return new HttpGet(url);
         }
 
@@ -138,13 +147,16 @@ class HttpWrapper {
      * @param keyValChain Key=val data format, multi data separated by &
      */
     static HttpPost createPostForm(String url, String keyValChain) {
+        INSTANCE.log.info("POST " + url + ", Payload: " + keyValChain);
         return createPostEntity(url, keyValChain, ContentType.APPLICATION_FORM_URLENCODED);
     }
 
     static HttpPost createPostForm(String url, Map<String, Object> requestBody) {
+        List<NameValuePair> parameters = initParams(requestBody);
+        INSTANCE.log.info("POST " + url + ", Payload: " + parameters);
 
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setEntity(new UrlEncodedFormEntity(initParams(requestBody), StandardCharsets.UTF_8));
+        httpPost.setEntity(new UrlEncodedFormEntity(parameters, StandardCharsets.UTF_8));
         return httpPost;
     }
 
@@ -155,11 +167,14 @@ class HttpWrapper {
      * @param requestJsonBody json data format
      */
     static HttpPost createPostJson(String url, String requestJsonBody) {
+        INSTANCE.log.info("POST " + url + ", Payload: " + requestJsonBody);
         return createPostEntity(url, requestJsonBody, ContentType.APPLICATION_JSON);
     }
 
     static HttpPost createPostJson(String url, Object requestBody) {
-        return createPostEntity(url, writeObjAsJson(requestBody), ContentType.APPLICATION_JSON);
+        String payload = writeObjAsJson(requestBody);
+        INSTANCE.log.info("POST " + url + ", Payload: " + payload);
+        return createPostEntity(url, payload, ContentType.APPLICATION_JSON);
     }
 
 
@@ -169,11 +184,14 @@ class HttpWrapper {
      * @param requestXmlBody xml data format
      */
     static HttpPost createPostXml(String url, String requestXmlBody) {
+        INSTANCE.log.info("POST " + url + ", Payload: " + requestXmlBody);
         return createPostEntity(url, requestXmlBody, ContentType.APPLICATION_XML);
     }
 
     static HttpPost createPostXml(String url, Object requestBody) {
-        return createPostEntity(url, writeObjAsXml(requestBody), ContentType.APPLICATION_XML);
+        String payload = writeObjAsXml(requestBody);
+        INSTANCE.log.info("POST " + url + ", Payload: " + payload);
+        return createPostEntity(url, payload, ContentType.APPLICATION_XML);
     }
 
 
@@ -184,6 +202,7 @@ class HttpWrapper {
      * @param contentType Specifies the body data content-type
      */
     static HttpPost createPostEntity(String url, String body, ContentType contentType) {
+        INSTANCE.log.info("POST " + url + ", Payload: " + body);
 
         StringEntity entity = new StringEntity(body, StandardCharsets.UTF_8);
         entity.setContentType(contentType.getMimeType());
@@ -202,6 +221,7 @@ class HttpWrapper {
     }
 
     static HttpPost createPostFile(String url, File file, ContentType contentType) {
+        INSTANCE.log.info("POST " + url + ", Payload: a file...");
 
         FileEntity entity = new FileEntity(file, contentType);
 

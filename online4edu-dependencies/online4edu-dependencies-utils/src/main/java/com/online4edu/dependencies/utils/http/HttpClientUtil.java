@@ -2,14 +2,18 @@ package com.online4edu.dependencies.utils.http;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HeaderElement;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeaderElementIterator;
+import org.apache.http.protocol.HTTP;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,35 +22,24 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 客户端工具
  *
  * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/12/24 20:43
+ * @since 2021/12/24 20:43
  */
 public class HttpClientUtil {
 
     private HttpClientUtil() {
     }
 
-    private static volatile boolean init = false;
+    private static final AtomicBoolean init = new AtomicBoolean(false);
 
     private static RequestConfig defaultRequestConfig;
 
     private static CloseableHttpClient httpClient;
-
-    /**
-     * 监控线程, 对异常和空闲线程进行关闭
-     * <p>
-     * 每 30s 运行一次
-     */
-    private static final ScheduledThreadPoolExecutor taskScheduler = new ScheduledThreadPoolExecutor(1,
-            new DefaultThreadFactory("clean-stale-httpclient-"), new ThreadPoolExecutor.CallerRunsPolicy());
-
 
     /**
      * 从连接池获取连接的超时时间
@@ -73,42 +66,54 @@ public class HttpClientUtil {
      */
     public static final int MAX_TOTAL = 500;
 
-    /**
-     * 定时清理陈旧线程周期
-     */
-    public static final int STALE_CONNECTION_CHECK = 30;
-
-    public static synchronized void init(int connectionRequestTimeout, int connectTimeout, int socketTimeout) {
-
-        if (init) {
+    private static synchronized void init(int connectionRequestTimeout, int connectTimeout, int socketTimeout) {
+        if (init.get()) {
             return;
         }
 
         // 连接池
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-        //connectionManager.setValidateAfterInactivity(STALE_CONNECTION_CHECK);
-        connectionManager.setDefaultMaxPerRoute(DEFAULT_MAX_PER_ROUTE);
-        connectionManager.setMaxTotal(MAX_TOTAL);
+        PoolingHttpClientConnectionManager conMgr = new PoolingHttpClientConnectionManager();
+        conMgr.setDefaultMaxPerRoute(DEFAULT_MAX_PER_ROUTE);
+        conMgr.setMaxTotal(MAX_TOTAL);
 
+        // 默认连接配置
         defaultRequestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(connectionRequestTimeout)
                 .setConnectTimeout(connectTimeout)
                 .setSocketTimeout(socketTimeout)
-                //.setStaleConnectionCheckEnabled()
                 .build();
 
+        // 活跃策略
+        ConnectionKeepAliveStrategy strategy = (response, ctx) -> {
+            BasicHeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+            while (it.hasNext()) {
+                HeaderElement e = it.nextElement();
+                String n = e.getName();
+                String v = e.getValue();
+                if (v != null && n.equalsIgnoreCase("timeout")) {
+                    return Long.parseLong(v) * 1000;
+                }
+            }
+            // 如果没有约定, 则默认定义时长为 60s
+            return 60 * 1000;
+        };
+
+        // 客户端实例
         httpClient = HttpClientBuilder.create()
-                .setConnectionManager(connectionManager)
+                .setConnectionManager(conMgr)
                 .setDefaultRequestConfig(defaultRequestConfig)
+                .setKeepAliveStrategy(strategy)
                 .build();
 
+        // 监控线程, 对异常和空闲线程进行关闭
+        IdleConnectionMonitorThread idleMonitorThread = new IdleConnectionMonitorThread(conMgr);
+        idleMonitorThread.setDaemon(true);
+        idleMonitorThread.start();
 
-        // 异常连接线程监控
-        taskScheduler.scheduleAtFixedRate(
-                new IdleConnectionMonitorThread(connectionManager),
-                STALE_CONNECTION_CHECK, STALE_CONNECTION_CHECK, TimeUnit.SECONDS);
+        // Shutdown Hook
+        Runtime.getRuntime().addShutdownHook(new Thread(idleMonitorThread::shutdown));
 
-        init = true;
+        init.set(true);
     }
 
     /**
@@ -314,18 +319,18 @@ public class HttpClientUtil {
         }
     }
 
-    public static String doRequest(HttpRequestBase httpRequestBase, CustomRequestConfig customRequestConfig) {
+    public static String doRequest(HttpRequestBase request, CustomRequestConfig customRequestConfig) {
         try {
-            if (!init) {
+            if (!init.get()) {
                 init(CONNECTION_REQUEST_TIMEOUT, CONNECT_TIMEOUT, SOCKET_TIMEOUT);
             }
             // Merge Custom Request Config
-            HttpWrapper.mergeCustomRequestConfig(httpRequestBase, customRequestConfig, defaultRequestConfig);
-            return httpClient.execute(httpRequestBase, new PlainTxtResponseHandler());
+            HttpWrapper.mergeCustomRequestConfig(request, customRequestConfig, defaultRequestConfig);
+            return httpClient.execute(request, new PlainTextResponseHandler());
         } catch (IOException e) {
             throw new HttpException(e);
         } finally {
-            httpRequestBase.releaseConnection();
+            request.releaseConnection();
         }
     }
 
@@ -333,7 +338,7 @@ public class HttpClientUtil {
 
         HttpGet httpGet = new HttpGet(url);
         try {
-            if (!init) {
+            if (!init.get()) {
                 init(CONNECTION_REQUEST_TIMEOUT, CONNECT_TIMEOUT, SOCKET_TIMEOUT);
             }
             // Merge Custom Request Config

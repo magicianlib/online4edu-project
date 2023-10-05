@@ -1,5 +1,6 @@
 package com.online4edu.dependencies.utils.http;
 
+import lombok.Getter;
 import org.apache.http.HttpHost;
 
 import java.util.HashMap;
@@ -9,9 +10,10 @@ import java.util.Map;
  * Custom Http Client Request Config
  *
  * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/12/24 20:42
  * @see org.apache.http.client.config.RequestConfig.Builder
+ * @since 2021/12/24 20:42
  */
+@Getter
 public class CustomRequestConfig {
 
     /**
@@ -59,56 +61,28 @@ public class CustomRequestConfig {
         this.headers = new HashMap<>(8);
     }
 
-    public boolean isEnabledRedirect() {
-        return enabledRedirect;
-    }
-
     public void setEnabledRedirect(boolean enabledRedirect) {
         this.enabledRedirect = enabledRedirect;
-    }
-
-    public int getConnectionRequestTimeout() {
-        return connectionRequestTimeout;
     }
 
     public void setConnectionRequestTimeout(int connectionRequestTimeout) {
         this.connectionRequestTimeout = connectionRequestTimeout;
     }
 
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
     public void setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
-    }
-
-    public int getSocketTimeout() {
-        return socketTimeout;
     }
 
     public void setSocketTimeout(int socketTimeout) {
         this.socketTimeout = socketTimeout;
     }
 
-    public long getSelectTimeout() {
-        return selectTimeout;
-    }
-
     public void setSelectTimeout(long selectTimeout) {
         this.selectTimeout = selectTimeout;
     }
 
-    public HttpHost getProxy() {
-        return proxy;
-    }
-
     public void setProxy(HttpHost proxy) {
         this.proxy = proxy;
-    }
-
-    public Map<String, Object> getHeaders() {
-        return headers;
     }
 
     public void setHeaders(Map<String, Object> headers) {

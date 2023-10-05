@@ -1,11 +1,10 @@
 package com.online4edu.dependencies.utils.http;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.impl.client.AbstractResponseHandler;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ResponseHandler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -18,38 +17,22 @@ import java.io.OutputStream;
  * @author Shilin <br > mingrn97@gmail.com
  * @date 2021/12/24 20:42
  */
-class DownloadResponseHandler extends AbstractResponseHandler<Void> {
+class DownloadResponseHandler implements ResponseHandler<Void> {
 
-    private final OutputStream outputStream;
+    private final OutputStream out;
 
-    public DownloadResponseHandler(OutputStream outputStream) {
-        this.outputStream = outputStream;
+    public DownloadResponseHandler(OutputStream out) {
+        this.out = out;
     }
 
     @Override
-    public Void handleEntity(HttpEntity entity) throws IOException {
-
-        try {
-            final InputStream in = entity.getContent();
-            if (in.available() > 0) {
-                doWrite(in, outputStream);
-            }
-        } finally {
-            EntityUtils.consume(entity);
-        }
-        return null;
-    }
-
-    static void doWrite(InputStream in, OutputStream out) {
-        try {
-            int length;
-            byte[] tmp = new byte[1024];
-            while ((length = in.read(tmp)) != -1) {
-                out.write(tmp, 0, length);
-            }
-            out.flush();
-        } catch (IOException e) {
-            throw new HttpException("write file exception", e);
+    public Void handleResponse(HttpResponse response) throws IOException {
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode >= HttpStatus.SC_OK && statusCode < HttpStatus.SC_MULTIPLE_CHOICES) {
+            response.getEntity().writeTo(out);
+            return null;
+        } else {
+            throw new HttpException("HTTP请求失败, 状态码：" + statusCode);
         }
     }
 }
