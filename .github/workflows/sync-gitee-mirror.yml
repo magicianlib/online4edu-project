@@ -7,7 +7,7 @@ jobs:
 
   mirror-sync:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     # Environment variable
     env:
@@ -28,32 +28,33 @@ jobs:
       gitee_user: ${{ secrets.GITEE_USER }}
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        #with:
+          #persist-credentials: false
 
-      - name: sync github -> gitee
+      - name: Mirror the Github organization repos to Gitee.
         uses: Yikun/hub-mirror-action@master
-
-        if: env.dst_key && env.dst_token && env.gitee_user
-
         with:
 
-          cache_path: /github/workspace/hub-mirror-cache
+          #cache_path: /github/workspace/hub-mirror-cache
 
-          # github source
-          src: 'github/${{ github.repository_owner }}'
-          # gitee source
-          dst: 'gitee/${{ secrets.GITEE_USER }}'
+          src: 'github/zlbr'
+          dst: 'gitee/zlbr'
 
           dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
           dst_token: ${{ secrets.GITEE_TOKEN }}
 
           # org or user, default is user
           account_type: user
+          force_update: true
+          debug: true
+
+          #white_list: 'normal,test,empty'
+          #black_list: 'test'
 
           # current repostory name
-          static_list: ${{ github.event.repository.name }}
+          # static_list: ${{ github.event.repository.name }}
 
           # static_list: 'repo_name,repo_name2'
           # black_list: 'repo_name,repo_name2'
