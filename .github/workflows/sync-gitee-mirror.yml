@@ -25,4 +25,4 @@ jobs:
           # org or user, default is user
           account_type: user
           force_update: true
-          # debug: true
+          debug: true
