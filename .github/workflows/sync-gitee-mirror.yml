@@ -16,8 +16,8 @@ jobs:
         uses: Yikun/hub-mirror-action@master
         with:
 
-          src: 'github/zlbr'
-          dst: 'gitee/zlbr'
+          src: 'github/magicianlib'
+          dst: 'gitee/magicianlib'
 
           dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
           dst_token: ${{ secrets.GITEE_TOKEN }}
