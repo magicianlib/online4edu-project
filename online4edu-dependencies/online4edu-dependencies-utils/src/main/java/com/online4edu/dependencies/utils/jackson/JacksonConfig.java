@@ -36,16 +36,16 @@ public final class JacksonConfig {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
 
         // LocalTime 序列化和反序列化配置
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateFormatUtil.FORMAT_TIME));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateFormatUtil.FORMAT_TIME));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateFormatUtil.ISO_LOCAL_TIME));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateFormatUtil.ISO_LOCAL_TIME));
 
         // LocalDate 序列化和反序列化配置
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateFormatUtil.FORMAT_DATE));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateFormatUtil.FORMAT_DATE));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateFormatUtil.ISO_LOCAL_DATE));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateFormatUtil.ISO_LOCAL_DATE));
 
         // LocalDateTime 序列化和反序列化配置
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateFormatUtil.FORMAT_DATETIME));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateFormatUtil.FORMAT_DATETIME));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateFormatUtil.DATE_TIME));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateFormatUtil.DATE_TIME));
 
         objectMapper.registerModule(javaTimeModule);
     }

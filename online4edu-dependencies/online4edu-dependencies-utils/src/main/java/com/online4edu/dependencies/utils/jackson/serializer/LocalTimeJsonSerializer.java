@@ -18,6 +18,6 @@ public class LocalTimeJsonSerializer extends JsonSerializer<LocalTime> {
 
     @Override
     public void serialize(LocalTime time, JsonGenerator generator, SerializerProvider serializers) throws IOException {
-        generator.writeString(time.format(DateFormatUtil.FORMAT_TIME));
+        generator.writeString(time.format(DateFormatUtil.ISO_LOCAL_TIME));
     }
 }

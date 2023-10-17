@@ -51,8 +51,8 @@ public final class JacksonUtil {
         XML.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 
         // java.util.Date 日期格式 处理
-        MAPPER.setDateFormat(new SimpleDateFormat(DateFormatUtil.PATTERN_DATETIME));
-        XML.setDateFormat(new SimpleDateFormat(DateFormatUtil.PATTERN_DATETIME));
+        MAPPER.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
+        XML.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
 
         // java.time.* 日期格式处理
         JacksonConfig.configureObjectMapper4Jsr310(MAPPER);

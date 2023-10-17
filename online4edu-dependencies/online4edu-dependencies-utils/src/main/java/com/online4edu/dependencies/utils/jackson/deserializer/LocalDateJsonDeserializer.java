@@ -17,6 +17,6 @@ import java.time.LocalDate;
 public class LocalDateJsonDeserializer extends JsonDeserializer<LocalDate> {
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        return LocalDate.parse(parser.getText(), DateFormatUtil.FORMAT_DATE);
+        return LocalDate.parse(parser.getText(), DateFormatUtil.ISO_LOCAL_DATE);
     }
 }

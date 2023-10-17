@@ -12,30 +12,22 @@ import java.util.Locale;
 public final class DateFormatUtil {
 
     /**
-     * 以T分隔日期和时间, 并带时区信息, 符合ISO8601规范.
+     * ISO8601 规范
      */
-    public static final String PATTERN_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
-    public static final String PATTERN_ISO_ON_SECOND = "yyyy-MM-dd'T'HH:mm:ssZZ";
-    public static final String PATTERN_ISO_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String BASIC_ISO_DATE_PATTERN = "yyyyMMdd"; // 20111203
+    public static final String ISO_LOCAL_DATE_PATTERN = "yyyy-MM-dd"; // 2011-12-03
+    public static final String ISO_LOCAL_TIME_PATTERN = "HH:mm:ss"; // 10:15:30
+    public static final String ISO_LOCAL_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"; // 2011-12-03T10:15:30
+
+    public static final DateTimeFormatter BASIC_ISO_DATE = DateTimeFormatter.ofPattern(BASIC_ISO_DATE_PATTERN, Locale.getDefault());
+    public static final DateTimeFormatter ISO_LOCAL_DATE = DateTimeFormatter.ofPattern(ISO_LOCAL_DATE_PATTERN, Locale.getDefault());
+    public static final DateTimeFormatter ISO_LOCAL_TIME = DateTimeFormatter.ofPattern(ISO_LOCAL_TIME_PATTERN, Locale.getDefault());
+    public static final DateTimeFormatter ISO_LOCAL_DATE_TIME = DateTimeFormatter.ofPattern(ISO_LOCAL_DATE_TIME_PATTERN, Locale.getDefault());
 
     /**
-     * 以空格分隔日期和时间, 不带时区信息.
+     * 自定义
      */
-    public static final String PATTERN_TIME = "HH:mm:ss";
-    public static final String PATTERN_DATE = "yyyy-MM-dd";
-    public static final String PATTERN_DATETIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss"; // 2011-12-03 10:15:30
 
-    /**
-     * 符合ISO8601规范
-     */
-    public static final DateTimeFormatter FORMAT_ISO = DateTimeFormatter.ofPattern(PATTERN_ISO, Locale.getDefault());
-    public static final DateTimeFormatter FORMAT_ISO_ON_SECOND = DateTimeFormatter.ofPattern(PATTERN_ISO_ON_SECOND, Locale.getDefault());
-    public static final DateTimeFormatter FORMAT_ISO_DATETIME = DateTimeFormatter.ofPattern(PATTERN_ISO_DATETIME, Locale.getDefault());
-
-    /**
-     * 以空格分隔日期和时间, 不带时区信息
-     */
-    public static final DateTimeFormatter FORMAT_TIME = DateTimeFormatter.ofPattern(PATTERN_TIME, Locale.getDefault());
-    public static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern(PATTERN_DATE, Locale.getDefault());
-    public static final DateTimeFormatter FORMAT_DATETIME = DateTimeFormatter.ofPattern(PATTERN_DATETIME, Locale.getDefault());
+    public static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN, Locale.getDefault());
 }
