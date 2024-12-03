@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 import com.online4edu.dependencies.utils.exception.DeserializationException;
@@ -21,8 +22,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.TimeZone;
+import java.util.*;
 
 
 /**
@@ -274,21 +274,59 @@ public final class JacksonUtil {
 
     /**
      * 将 JSON 字符串转换为指定集合类型
+     */
+    public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element) {
+        try {
+            CollectionType type = MAPPER.getTypeFactory().constructCollectionType(collection, element);
+            return MAPPER.readValue(json, type);
+        } catch (Exception e) {
+            throw new RuntimeException("Parse json to Collection<E> failed:" + json, e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> ArrayList<E> toCollection(String json, Class<E> element) {
+        return toCollection(json, ArrayList.class, element);
+    }
+
+    /**
+     * 将 JSON 字符串转为 Map
      * <pre>
-     * List<User> data = toCollection(jsonArray, List.class, User.class);
+     * HashMap<String, String> data = toMap(jsonMap, HashMap.class, String.class, String.class);
      * </pre>
      *
-     * @param json           JSON 字符串
-     * @param collectionType 集合类型，如 List.class, Set.class
-     * @param elementType    集合中元素的类型，如 User.class
-     * @param <T>            集合类型
-     * @param <E>            元素类型
-     * @return 转换后的集合对象
-     * @throws Exception 如果解析失败
+     * @throws RuntimeException 如果解析失败
      */
-    public static <T extends Collection<E>, E> T toCollection(String json, Class<? extends T> collectionType, Class<E> elementType) throws Exception {
-        CollectionType type = MAPPER.getTypeFactory().constructCollectionType(collectionType, elementType);
-        return MAPPER.readValue(json, type);
+    public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value) {
+        try {
+            MapType type = MAPPER.getTypeFactory().constructMapType(map, key, value);
+            return MAPPER.readValue(json, type);
+        } catch (Exception e) {
+            throw new RuntimeException("Parse json to Map<K, V> failed:" + json, e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> HashMap<K, V> toMap(String json, Class<K> key, Class<V> value) {
+        return toMap(json, HashMap.class, key, value);
+    }
+
+    /**
+     * 将 JSON 字符串转换为指定集合Map类型
+     */
+    public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
+        try {
+            MapType mapType = MAPPER.getTypeFactory().constructMapType(map, key, value);
+            CollectionType collectionType = MAPPER.getTypeFactory().constructCollectionType(collection, mapType);
+            return MAPPER.readValue(json, collectionType);
+        } catch (Exception e) {
+            throw new RuntimeException("Parse json to Collection<Map<K, V>>> failed:" + json, e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String json, Class<K> key, Class<V> value) {
+        return toCollectionMap(json, ArrayList.class, HashMap.class, key, value);
     }
 
     /**
