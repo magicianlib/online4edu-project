@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 import com.online4edu.dependencies.utils.exception.DeserializationException;
@@ -20,6 +21,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.TimeZone;
 
 
@@ -268,6 +270,25 @@ public final class JacksonUtil {
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
+    }
+
+    /**
+     * 将 JSON 字符串转换为指定集合类型
+     * <pre>
+     * List<User> data = toCollection(jsonArray, List.class, User.class);
+     * </pre>
+     *
+     * @param json           JSON 字符串
+     * @param collectionType 集合类型，如 List.class, Set.class
+     * @param elementType    集合中元素的类型，如 User.class
+     * @param <T>            集合类型
+     * @param <E>            元素类型
+     * @return 转换后的集合对象
+     * @throws Exception 如果解析失败
+     */
+    public static <T extends Collection<E>, E> T toCollection(String json, Class<? extends T> collectionType, Class<E> elementType) throws Exception {
+        CollectionType type = MAPPER.getTypeFactory().constructCollectionType(collectionType, elementType);
+        return MAPPER.readValue(json, type);
     }
 
     /**
