@@ -8,7 +8,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.function.Function;
 
 /**
  * <p>HMAC(Hash-based Message Authentication Code)是一种使用哈希函数
@@ -40,7 +39,7 @@ public enum Hmac {
         return mac.doFinal(plaintext);
     }
 
-    public <R> R hmac(byte[] secret, byte[] plaintext, Function<byte[], R> production) throws NoSuchAlgorithmException, InvalidKeyException {
+    public <R> R hmac(byte[] secret, byte[] plaintext, Production<R> production) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac mac = Mac.getInstance(this.name());
         SecretKeySpec keySpec = new SecretKeySpec(secret, algorithm);
         mac.init(keySpec);
@@ -53,6 +52,14 @@ public enum Hmac {
 
     public String hmacBase64(String secret, String plaintext) throws NoSuchAlgorithmException, InvalidKeyException {
         return hmac(secret.getBytes(StandardCharsets.UTF_8), plaintext.getBytes(StandardCharsets.UTF_8), Base64::encodeBase64String);
+    }
+
+    @FunctionalInterface
+    public interface Production<R> {
+        /**
+         * @return the function result
+         */
+        R apply(byte[] data);
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeyException {

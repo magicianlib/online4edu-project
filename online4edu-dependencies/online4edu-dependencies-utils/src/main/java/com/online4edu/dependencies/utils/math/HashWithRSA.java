@@ -6,7 +6,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
 /**
  * <p>该类提供常见的 HashWithRSA 组合算法，用于提供数据签名和验签。</p>
@@ -19,21 +18,24 @@ import java.util.function.Function;
  * 加密和签名都是为了安全性考虑，但有所不同。加密是为了防止信息被泄露，签名是为了防止信息被篡改。</p>
  *
  * <h3>加密过程：</h3>
+ *
  * <ul>
  * <li>A生成一对密钥（公钥和私钥）。私钥不公开，A自己保留。公钥为公开的，任何人可以获取。</li>
  * <li>A传递自己的公钥给B，B使用A的<em>公钥对消息进行加密</em>。</li>
  * <li>A接收到B加密的消息，利用A自己的<em>私钥对消息进行解密</em></li>
  * </ul>
- * <p>整个过程中，只用A的私钥才能对消息进行解密，防止消息被泄露。</p><br>
+ *
+ * <p>整个过程中，只用A的私钥才能对消息进行解密，防止消息被泄露。</p>
  *
  * <h3>签名过程:</h3>
+ *
  * <ul>
  * <li>A生成一对密钥(公钥和私钥)。私钥不公开，A自己保留。公钥为公开的，任何人可以获取。</li>
  * <li>A用自己的私钥对消息进行加签，形成签名，并将签名和消息本身一起传递给B。</li>
  * <li>B收到消息后，通过A的公钥进行验签。如果验签成功，则证明消息是A发送的。</li>
  * </ul>
- * <p>
- * 整个过程，只有使用A私钥签名的消息才能被验签成功。即使知道了消息内容，也无法伪造签名，防止消息被篡改。
+ *
+ * <p>整个过程，只有使用A私钥签名的消息才能被验签成功。即使知道了消息内容，也无法伪造签名，防止消息被篡改。
  */
 public enum HashWithRSA {
 
@@ -70,7 +72,7 @@ public enum HashWithRSA {
         return spi.sign();
     }
 
-    public <R> R signature(byte[] priKey, byte[] plaintext, Function<byte[], R> production) throws Exception {
+    public <R> R signature(byte[] priKey, byte[] plaintext, Production<R> production) throws Exception {
         return production.apply(signature(priKey, plaintext));
     }
 
@@ -78,7 +80,7 @@ public enum HashWithRSA {
         return signature(priKey.call(), plaintext.call());
     }
 
-    public <R> R signature(Callable<byte[]> priKey, Callable<byte[]> plaintext, Function<byte[], R> production) throws Exception {
+    public <R> R signature(Callable<byte[]> priKey, Callable<byte[]> plaintext, Production<R> production) throws Exception {
         return production.apply(signature(priKey, plaintext));
     }
 
@@ -86,7 +88,7 @@ public enum HashWithRSA {
         return signature(decodeBase64ToByte(priKeyBase64), plaintext.getBytes(StandardCharsets.UTF_8));
     }
 
-    public <R> R signature(String priKeyBase64, String plaintext, Function<byte[], R> production) throws Exception {
+    public <R> R signature(String priKeyBase64, String plaintext, Production<R> production) throws Exception {
         return production.apply(signature(priKeyBase64, plaintext));
     }
 
@@ -129,5 +131,13 @@ public enum HashWithRSA {
 
     public static byte[] decodeBase64ToByte(String decoded) {
         return java.util.Base64.getDecoder().decode(decoded);
+    }
+
+    @FunctionalInterface
+    public interface Production<R> {
+        /**
+         * @return the function result
+         */
+        R apply(byte[] data);
     }
 }
