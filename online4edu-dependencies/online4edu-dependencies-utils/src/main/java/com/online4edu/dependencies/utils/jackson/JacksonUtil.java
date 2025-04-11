@@ -264,12 +264,8 @@ public final class JacksonUtil {
      * @return {@link JsonNode}
      * @throws DeserializationException if deserialize failed
      */
-    public static JsonNode toObj(String json) {
-        try {
-            return MAPPER.readTree(json);
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
+    public static ObjectNode toObj(String json) {
+        return toObj(json, ObjectNode.class);
     }
 
     /**
