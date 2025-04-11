@@ -268,6 +268,15 @@ public final class JacksonUtil {
         return toObj(json, ObjectNode.class);
     }
 
+    public static <T> T toObj(String json, Class<T> parametrized, Class<?>... parameterClasses) {
+        try {
+            JavaType javaType = MAPPER.getTypeFactory().constructParametricType(parametrized, parameterClasses);
+            return MAPPER.readValue(json, javaType);
+        } catch (IOException e) {
+            throw new DeserializationException(e);
+        }
+    }
+
     /**
      * 将 JSON 字符串转换为指定集合类型
      */
