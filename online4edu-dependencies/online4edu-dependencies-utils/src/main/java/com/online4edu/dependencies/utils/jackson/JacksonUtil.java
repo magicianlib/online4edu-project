@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 import com.online4edu.dependencies.utils.exception.DeserializationException;
 import com.online4edu.dependencies.utils.exception.SerializationException;
@@ -26,47 +25,39 @@ import java.util.*;
 
 
 /**
- * Json utils implement by Jackson.
+ * Jackson JSON 序列化/反序列化工具类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2022/04/19 17:43
+ * @author magicianlib@gmail.com
+ * @see com.fasterxml.jackson.annotation
  */
 public final class JacksonUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final XmlMapper XML = new XmlMapper();
 
     static {
+        // 忽略未知字段
         MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        XML.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         // 序列化所有字段
         MAPPER.setSerializationInclusion(Include.ALWAYS);
-        XML.setSerializationInclusion(Include.ALWAYS);
 
         // 设置时区
         MAPPER.setTimeZone(TimeZone.getDefault());
-        XML.setTimeZone(TimeZone.getDefault());
 
         // 忽略 transient 字段
         MAPPER.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
-        XML.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 
         // java.util.Date 日期格式 处理
         MAPPER.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
-        XML.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
 
         // java.time.* 日期格式处理
         JacksonConfig.configureObjectMapper4Jsr310(MAPPER);
-        JacksonConfig.configureObjectMapper4Jsr310(XML);
 
         // Null 值处理
         JacksonConfig.configureNullObject(MAPPER);
-        JacksonConfig.configureNullObject(XML);
 
         // BigDecimal 自定义序列化
         JacksonConfig.registerModule(MAPPER, BigDecimal.class, new BigDecimalAsStringJsonSerializer());
-        JacksonConfig.registerModule(XML, BigDecimal.class, new BigDecimalAsStringJsonSerializer());
     }
 
     /**
@@ -74,13 +65,6 @@ public final class JacksonUtil {
      */
     public static ObjectMapper createObjectMapper() {
         return MAPPER;
-    }
-
-    /**
-     * Get XmlMapper Instance
-     */
-    public static XmlMapper createXmlMapper() {
-        return XML;
     }
 
 
@@ -380,108 +364,5 @@ public final class JacksonUtil {
      */
     public static JavaType constructJavaType(Type type) {
         return MAPPER.constructType(type);
-    }
-
-
-    // ====================== XmlMapper ======================
-
-    /**
-     * Object to json string.
-     *
-     * @param obj obj
-     * @return xml string
-     * @throws SerializationException if transfer failed
-     */
-    public static String toXml(Object obj) {
-        try {
-            return XML.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            throw new SerializationException(obj.getClass(), e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param xml   xml string
-     * @param clazz {@link Type} of object
-     * @param <T>   General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T xml2obj(byte[] xml, Type clazz) {
-        try {
-            return xml2obj(new String(xml, StandardCharsets.UTF_8), clazz);
-        } catch (Exception e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param xml  xml string
-     * @param type {@link Type} of object
-     * @param <T>  General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T xml2obj(String xml, Type type) {
-        try {
-            return MAPPER.readValue(xml, MAPPER.constructType(type));
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json          json string
-     * @param typeReference {@link TypeReference} of object
-     * @param <T>           General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T xml2obj(String json, TypeReference<T> typeReference) {
-        try {
-            return XML.readValue(json, typeReference);
-        } catch (IOException e) {
-            throw new DeserializationException(typeReference.getClass(), e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param inputStream xml string input stream
-     * @param clazz       class of object
-     * @param <T>         General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T xml2obj(InputStream inputStream, Class<T> clazz) {
-        try {
-            return XML.readValue(inputStream, clazz);
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param xml   xml string
-     * @param clazz class of object
-     * @param <T>   General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T xml2obj(String xml, Class<T> clazz) {
-        try {
-            return XML.readValue(xml, clazz);
-        } catch (IOException e) {
-            throw new DeserializationException(clazz, e);
-        }
     }
 }

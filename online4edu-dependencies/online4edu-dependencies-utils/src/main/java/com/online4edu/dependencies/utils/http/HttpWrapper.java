@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.online4edu.dependencies.utils.jackson.JacksonUtil;
+import com.online4edu.dependencies.utils.jackson.JacksonXmlUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Consts;
@@ -320,7 +321,7 @@ class HttpWrapper {
      */
     private static String writeObjAsXml(Object requestBody) {
         try {
-            XmlMapper xmlMapper = JacksonUtil.createXmlMapper();
+            XmlMapper xmlMapper = JacksonXmlUtil.createXmlMapper();
             return xmlMapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write request body [%s] to xml, It is a binary data?", requestBody.getClass().getSimpleName()), e);
