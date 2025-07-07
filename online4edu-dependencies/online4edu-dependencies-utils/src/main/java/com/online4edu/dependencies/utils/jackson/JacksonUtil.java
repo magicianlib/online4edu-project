@@ -32,39 +32,55 @@ import java.util.*;
  */
 public final class JacksonUtil {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER_WITH_FORMAT = createObjectMapper(true);
+    private static final ObjectMapper MAPPER_WITHOUT_FORMAT = createObjectMapper(false);
 
-    static {
-        // 忽略未知字段
-        MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    /**
+     * 获取 ObjectMapper 实例
+     */
+    public static ObjectMapper createMapper() {
+        return createMapper(false);
+    }
 
-        // 序列化所有字段
-        MAPPER.setSerializationInclusion(Include.ALWAYS);
-
-        // 设置时区
-        MAPPER.setTimeZone(TimeZone.getDefault());
-
-        // 忽略 transient 字段
-        MAPPER.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
-
-        // java.util.Date 日期格式 处理
-        MAPPER.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
-
-        // java.time.* 日期格式处理
-        JacksonConfig.configureObjectMapper4Jsr310(MAPPER);
-
-        // Null 值处理
-        JacksonConfig.configureNullObject(MAPPER);
-
-        // BigDecimal 自定义序列化
-        JacksonConfig.registerModule(MAPPER, BigDecimal.class, new BigDecimalAsStringJsonSerializer());
+    public static ObjectMapper createMapper(boolean format) {
+        return format ? MAPPER_WITH_FORMAT : MAPPER_WITHOUT_FORMAT;
     }
 
     /**
-     * Get ObjectMapper Instance
+     * 创建 ObjectMapper 对象
      */
-    public static ObjectMapper createMapper() {
-        return MAPPER;
+    public static ObjectMapper createObjectMapper(boolean format) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        // 格式化输出
+        // mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, format);
+
+        // 忽略未知字段
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        // 序列化所有字段
+        mapper.setSerializationInclusion(Include.ALWAYS);
+
+        // 设置时区
+        mapper.setTimeZone(TimeZone.getDefault());
+
+        // 忽略 transient 字段
+        mapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
+
+        // java.util.Date 日期格式 处理
+        mapper.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
+
+        // java.time.* 日期格式处理
+        JacksonConfig.configureObjectMapper4Jsr310(mapper);
+
+        // Null 值处理
+        JacksonConfig.configureNullObject(mapper);
+
+        // BigDecimal 自定义序列化
+        JacksonConfig.registerModule(mapper, BigDecimal.class, new BigDecimalAsStringJsonSerializer());
+
+        return mapper;
     }
 
 
@@ -79,7 +95,7 @@ public final class JacksonUtil {
      */
     public static String toJson(Object obj) {
         try {
-            return MAPPER.writeValueAsString(obj);
+            return MAPPER_WITH_FORMAT.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -94,7 +110,7 @@ public final class JacksonUtil {
      */
     public static byte[] toJsonBytes(Object obj) {
         try {
-            String json = MAPPER.writeValueAsString(obj);
+            String json = MAPPER_WITH_FORMAT.writeValueAsString(obj);
             if (StringUtils.isNotBlank(json)) {
                 return json.getBytes(StandardCharsets.UTF_8);
             }
@@ -150,7 +166,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(InputStream inputStream, Class<T> clazz) {
         try {
-            return MAPPER.readValue(inputStream, clazz);
+            return MAPPER_WITH_FORMAT.readValue(inputStream, clazz);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -184,7 +200,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, Class<T> clazz) {
         try {
-            return MAPPER.readValue(json, clazz);
+            return MAPPER_WITH_FORMAT.readValue(json, clazz);
         } catch (IOException e) {
             throw new DeserializationException(clazz, e);
         }
@@ -201,7 +217,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, Type type) {
         try {
-            return MAPPER.readValue(json, MAPPER.constructType(type));
+            return MAPPER_WITH_FORMAT.readValue(json, MAPPER_WITH_FORMAT.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -218,7 +234,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, TypeReference<T> typeReference) {
         try {
-            return MAPPER.readValue(json, typeReference);
+            return MAPPER_WITH_FORMAT.readValue(json, typeReference);
         } catch (IOException e) {
             throw new DeserializationException(typeReference.getClass(), e);
         }
@@ -235,7 +251,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(InputStream inputStream, Type type) {
         try {
-            return MAPPER.readValue(inputStream, MAPPER.constructType(type));
+            return MAPPER_WITH_FORMAT.readValue(inputStream, MAPPER_WITH_FORMAT.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(type, e);
         }
@@ -254,8 +270,8 @@ public final class JacksonUtil {
 
     public static <T> T toObj(String json, Class<T> parametrized, Class<?>... parameterClasses) {
         try {
-            JavaType javaType = MAPPER.getTypeFactory().constructParametricType(parametrized, parameterClasses);
-            return MAPPER.readValue(json, javaType);
+            JavaType javaType = MAPPER_WITH_FORMAT.getTypeFactory().constructParametricType(parametrized, parameterClasses);
+            return MAPPER_WITH_FORMAT.readValue(json, javaType);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -266,8 +282,8 @@ public final class JacksonUtil {
      */
     public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element) {
         try {
-            CollectionType type = MAPPER.getTypeFactory().constructCollectionType(collection, element);
-            return MAPPER.readValue(json, type);
+            CollectionType type = MAPPER_WITH_FORMAT.getTypeFactory().constructCollectionType(collection, element);
+            return MAPPER_WITH_FORMAT.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<E> failed:" + json, e);
         }
@@ -288,8 +304,8 @@ public final class JacksonUtil {
      */
     public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            MapType type = MAPPER.getTypeFactory().constructMapType(map, key, value);
-            return MAPPER.readValue(json, type);
+            MapType type = MAPPER_WITH_FORMAT.getTypeFactory().constructMapType(map, key, value);
+            return MAPPER_WITH_FORMAT.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Map<K, V> failed:" + json, e);
         }
@@ -305,9 +321,9 @@ public final class JacksonUtil {
      */
     public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            MapType mapType = MAPPER.getTypeFactory().constructMapType(map, key, value);
-            CollectionType collectionType = MAPPER.getTypeFactory().constructCollectionType(collection, mapType);
-            return MAPPER.readValue(json, collectionType);
+            MapType mapType = MAPPER_WITH_FORMAT.getTypeFactory().constructMapType(map, key, value);
+            CollectionType collectionType = MAPPER_WITH_FORMAT.getTypeFactory().constructCollectionType(collection, mapType);
+            return MAPPER_WITH_FORMAT.readValue(json, collectionType);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<Map<K, V>>> failed:" + json, e);
         }
@@ -325,7 +341,7 @@ public final class JacksonUtil {
      * @param type  type name of child class
      */
     public static void registerSubtype(Class<?> clazz, String type) {
-        MAPPER.registerSubtypes(new NamedType(clazz, type));
+        MAPPER_WITH_FORMAT.registerSubtypes(new NamedType(clazz, type));
     }
 
     /**
@@ -334,7 +350,7 @@ public final class JacksonUtil {
      * @return {@link ObjectNode}
      */
     public static ObjectNode createEmptyJsonNode() {
-        return new ObjectNode(MAPPER.getNodeFactory());
+        return new ObjectNode(MAPPER_WITH_FORMAT.getNodeFactory());
     }
 
     /**
@@ -343,7 +359,7 @@ public final class JacksonUtil {
      * @return {@link ArrayNode}
      */
     public static ArrayNode createEmptyArrayNode() {
-        return new ArrayNode(MAPPER.getNodeFactory());
+        return new ArrayNode(MAPPER_WITH_FORMAT.getNodeFactory());
     }
 
     /**
@@ -353,7 +369,7 @@ public final class JacksonUtil {
      * @return {@link JsonNode}
      */
     public static JsonNode transferToJsonNode(Object obj) {
-        return MAPPER.valueToTree(obj);
+        return MAPPER_WITH_FORMAT.valueToTree(obj);
     }
 
     /**
@@ -363,6 +379,6 @@ public final class JacksonUtil {
      * @return JavaType {@link JavaType}
      */
     public static JavaType constructJavaType(Type type) {
-        return MAPPER.constructType(type);
+        return MAPPER_WITH_FORMAT.constructType(type);
     }
 }
