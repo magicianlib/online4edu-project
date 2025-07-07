@@ -34,11 +34,25 @@ public class JacksonXmlUtil {
     /**
      * 用于生成带 XML 声明的 XML
      */
-    private static final XmlMapper XML_WITH_DECLARATION = createMapper(true);
+    private static final XmlMapper XML_WITH_DECLARATION = createXmlMapper(true, false);
     /**
      * 用于生成不带 XML 声明的 XML
      */
-    private static final XmlMapper XML_WITHOUT_DECLARATION = createMapper(false);
+    private static final XmlMapper XML_WITHOUT_DECLARATION = createXmlMapper(false, false);
+
+    public static XmlMapper createMapper() {
+        return createMapper(false);
+    }
+
+    /**
+     * 获取XML实例，自己指定是否需要XML声明：
+     * <p><pre>
+     *     <?xml version="1.0" encoding="UTF-8"?>
+     * </pre></p>
+     */
+    public static XmlMapper createMapper(boolean includeDeclaration) {
+        return includeDeclaration ? XML_WITH_DECLARATION : XML_WITHOUT_DECLARATION;
+    }
 
     /**
      * 创建并配置 XmlMapper 实例
@@ -51,13 +65,15 @@ public class JacksonXmlUtil {
      * </p>
      *
      * @param includeDeclaration 是否包含 XML 声明
+     * @param format             配置格式化输出
      * @return 配置好的 XmlMapper 实例
      */
-    private static XmlMapper createMapper(boolean includeDeclaration) {
+    public static XmlMapper createXmlMapper(boolean includeDeclaration, boolean format) {
         XmlMapper mapper = new XmlMapper();
 
         // 格式化输出
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        // mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, format);
 
         // XML 声明
         mapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, includeDeclaration);
@@ -88,19 +104,6 @@ public class JacksonXmlUtil {
         return mapper;
     }
 
-    public static XmlMapper createXmlMapper() {
-        return createXmlMapper(false);
-    }
-
-    /**
-     * 获取XML实例，自己指定是否需要XML声明：
-     * <p><pre>
-     * <?xml version="1.0" encoding="UTF-8"?>
-     * </pre></p>
-     */
-    public static XmlMapper createXmlMapper(boolean includeDeclaration) {
-        return includeDeclaration ? XML_WITH_DECLARATION : XML_WITHOUT_DECLARATION;
-    }
 
     // ====================== XmlMapper ======================
 
@@ -119,7 +122,7 @@ public class JacksonXmlUtil {
 
     public static String toXml(Object obj, boolean includeDeclaration) {
         try {
-            return createXmlMapper(includeDeclaration).writeValueAsString(obj);
+            return createMapper(includeDeclaration).writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -131,7 +134,7 @@ public class JacksonXmlUtil {
 
     public static byte[] toXmlBytes(Object obj, boolean includeDeclaration) {
         try {
-            return createXmlMapper(includeDeclaration).writeValueAsBytes(obj);
+            return createMapper(includeDeclaration).writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -143,7 +146,7 @@ public class JacksonXmlUtil {
 
     public static void toXml(Writer w, Object obj, boolean includeDeclaration) {
         try {
-            createXmlMapper(includeDeclaration).writeValue(w, obj);
+            createMapper(includeDeclaration).writeValue(w, obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -155,7 +158,7 @@ public class JacksonXmlUtil {
 
     public static void toXml(OutputStream out, Object obj, boolean includeDeclaration) {
         try {
-            createXmlMapper(includeDeclaration).writeValue(out, obj);
+            createMapper(includeDeclaration).writeValue(out, obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -191,7 +194,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(InputStream inputStream, Class<T> clazz, boolean includeDeclaration) {
         try {
-            return createXmlMapper(includeDeclaration).readValue(inputStream, clazz);
+            return createMapper(includeDeclaration).readValue(inputStream, clazz);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -209,7 +212,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(String xml, Type type, boolean includeDeclaration) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             return XML.readValue(xml, XML.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(e);
@@ -227,7 +230,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(String xml, Class<T> clazz, boolean includeDeclaration) {
         try {
-            return createXmlMapper(includeDeclaration).readValue(xml, clazz);
+            return createMapper(includeDeclaration).readValue(xml, clazz);
         } catch (IOException e) {
             throw new DeserializationException(clazz, e);
         }
@@ -245,7 +248,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(String xml, TypeReference<T> typeReference, boolean includeDeclaration) {
         try {
-            return createXmlMapper(includeDeclaration).readValue(xml, typeReference);
+            return createMapper(includeDeclaration).readValue(xml, typeReference);
         } catch (IOException e) {
             throw new DeserializationException(typeReference.getClass(), e);
         }
@@ -262,7 +265,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(InputStream inputStream, Type type, boolean includeDeclaration) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             return XML.readValue(inputStream, XML.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(type, e);
@@ -290,7 +293,7 @@ public class JacksonXmlUtil {
      */
     public static <T> T toObj(String xml, boolean includeDeclaration, Class<T> general, Class<?>... parameterClasses) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             JavaType javaType = XML.getTypeFactory().constructParametricType(general, parameterClasses);
             return XML.readValue(xml, javaType);
         } catch (IOException e) {
@@ -317,7 +320,7 @@ public class JacksonXmlUtil {
      */
     /*public static <C extends Collection<E>, E> C toCollection(String xml, boolean includeDeclaration, Class<C> collection, Class<E> element) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             CollectionType type = XML.getTypeFactory().constructCollectionType(collection, element);
             return XML.readValue(xml, type);
         } catch (Exception e) {
@@ -350,7 +353,7 @@ public class JacksonXmlUtil {
      */
     /*public static <K, V, H extends Map<K, V>> H toMap(String xml, boolean includeDeclaration, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             MapType type = XML.getTypeFactory().constructMapType(map, key, value);
             return XML.readValue(xml, type);
         } catch (Exception e) {
@@ -377,7 +380,7 @@ public class JacksonXmlUtil {
      */
     /*public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String xml, boolean includeDeclaration, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            XmlMapper XML = createXmlMapper(includeDeclaration);
+            XmlMapper XML = createMapper(includeDeclaration);
             MapType mapType = XML.getTypeFactory().constructMapType(map, key, value);
             CollectionType collectionType = XML.getTypeFactory().constructCollectionType(collection, mapType);
             return XML.readValue(xml, collectionType);

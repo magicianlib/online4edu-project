@@ -63,7 +63,7 @@ public final class JacksonUtil {
     /**
      * Get ObjectMapper Instance
      */
-    public static ObjectMapper createObjectMapper() {
+    public static ObjectMapper createMapper() {
         return MAPPER;
     }
 
