@@ -1,0 +1,79 @@
+package com.online4edu.dependencies.utils.money;
+
+import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+public class MoneyUtil {
+    /**
+     * 根据权重平摊份额
+     *
+     * @param pie     总份额
+     * @param weights 权重
+     */
+    public static void apportionByWeights(BigDecimal pie, List<Weight> weights) {
+        if (Objects.isNull(pie) || CollectionUtils.isEmpty(weights)) {
+            throw new RuntimeException("分摊权重未设置");
+        }
+
+        long distinct = weights.stream().map(Weight::getId).distinct().count();
+        if (weights.size() != distinct) {
+            throw new RuntimeException("存在重复的权重值");
+        }
+
+        BigDecimal totalWeight = weights.stream().map(Weight::getWeight).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (BigDecimalUtil.isEqZero(totalWeight)) {
+            throw new RuntimeException("分摊权重未设置");
+        }
+
+        Weight lastWeight = weights.get(0);
+        Weight lastNotZeroWeight = null;
+        for (Weight weight : weights) {
+            lastWeight = weight;
+
+            // DECIMAL32防止无限循环小数导致异常，小数点后2位的直接舍去
+            BigDecimal result = weight.getWeight().divide(totalWeight, MathContext.DECIMAL32).multiply(pie).setScale(2, RoundingMode.DOWN);
+            weight.setResult(result);
+
+            if (BigDecimalUtil.isNotEqZero(weight.getWeight())) {
+                lastNotZeroWeight = weight;
+            }
+        }
+
+        // 已分摊
+        BigDecimal allocated = weights.stream().map(Weight::getResult).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal residue = pie.subtract(allocated); // 剩余
+
+        if (BigDecimalUtil.isEqZero(lastWeight.getResult())) { // 最后一个结果为0，就将剩余金额
+            if (Objects.nonNull(lastNotZeroWeight)) {
+                lastNotZeroWeight.add(residue);
+            }
+        } else {
+            lastWeight.add(residue);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        BigDecimal total = new BigDecimal("100");
+        ArrayList<Weight> weights = Lists.newArrayList(
+                new Weight("1", new BigDecimal("10")),
+                new Weight("2", new BigDecimal("10")),
+                new Weight("2", new BigDecimal("10")),
+                new Weight("3", new BigDecimal("10")),
+                new Weight("3", new BigDecimal("0"))
+        );
+
+        apportionByWeights(total, weights);
+        for (Weight weight : weights) {
+            System.out.println(weight.getId() + " --------- " + weight.getWeight() + " --------- " + weight.getResult());
+        }
+
+    }
+}
