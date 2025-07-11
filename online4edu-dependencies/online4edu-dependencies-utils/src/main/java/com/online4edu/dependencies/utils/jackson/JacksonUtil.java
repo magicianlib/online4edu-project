@@ -1,6 +1,5 @@
 package com.online4edu.dependencies.utils.jackson;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
@@ -60,7 +59,7 @@ public final class JacksonUtil {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         // 序列化所有字段
-        mapper.setSerializationInclusion(Include.ALWAYS);
+        // mapper.setSerializationInclusion(Include.ALWAYS);
 
         // 设置时区
         mapper.setTimeZone(TimeZone.getDefault());
@@ -86,6 +85,10 @@ public final class JacksonUtil {
 
     // ====================== ObjectMapper ======================
 
+    public static String toJson(Object obj) {
+        return toJson(obj, false);
+    }
+
     /**
      * Object to json string.
      *
@@ -93,12 +96,16 @@ public final class JacksonUtil {
      * @return json string
      * @throws SerializationException if transfer failed
      */
-    public static String toJson(Object obj) {
+    public static String toJson(Object obj, boolean format) {
         try {
-            return MAPPER_WITH_FORMAT.writeValueAsString(obj);
+            return createMapper(format).writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
+    }
+
+    public static byte[] toJsonBytes(Object obj) {
+        return toJsonBytes(obj, false);
     }
 
     /**
@@ -108,9 +115,9 @@ public final class JacksonUtil {
      * @return json string byte array
      * @throws SerializationException if transfer failed
      */
-    public static byte[] toJsonBytes(Object obj) {
+    public static byte[] toJsonBytes(Object obj, boolean format) {
         try {
-            String json = MAPPER_WITH_FORMAT.writeValueAsString(obj);
+            String json = createMapper(format).writeValueAsString(obj);
             if (StringUtils.isNotBlank(json)) {
                 return json.getBytes(StandardCharsets.UTF_8);
             }
@@ -166,7 +173,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(InputStream inputStream, Class<T> clazz) {
         try {
-            return MAPPER_WITH_FORMAT.readValue(inputStream, clazz);
+            return MAPPER_WITHOUT_FORMAT.readValue(inputStream, clazz);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -200,7 +207,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, Class<T> clazz) {
         try {
-            return MAPPER_WITH_FORMAT.readValue(json, clazz);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, clazz);
         } catch (IOException e) {
             throw new DeserializationException(clazz, e);
         }
@@ -217,7 +224,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, Type type) {
         try {
-            return MAPPER_WITH_FORMAT.readValue(json, MAPPER_WITH_FORMAT.constructType(type));
+            return MAPPER_WITHOUT_FORMAT.readValue(json, MAPPER_WITHOUT_FORMAT.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -234,7 +241,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(String json, TypeReference<T> typeReference) {
         try {
-            return MAPPER_WITH_FORMAT.readValue(json, typeReference);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, typeReference);
         } catch (IOException e) {
             throw new DeserializationException(typeReference.getClass(), e);
         }
@@ -251,7 +258,7 @@ public final class JacksonUtil {
      */
     public static <T> T toObj(InputStream inputStream, Type type) {
         try {
-            return MAPPER_WITH_FORMAT.readValue(inputStream, MAPPER_WITH_FORMAT.constructType(type));
+            return MAPPER_WITHOUT_FORMAT.readValue(inputStream, MAPPER_WITHOUT_FORMAT.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(type, e);
         }
@@ -270,8 +277,8 @@ public final class JacksonUtil {
 
     public static <T> T toObj(String json, Class<T> parametrized, Class<?>... parameterClasses) {
         try {
-            JavaType javaType = MAPPER_WITH_FORMAT.getTypeFactory().constructParametricType(parametrized, parameterClasses);
-            return MAPPER_WITH_FORMAT.readValue(json, javaType);
+            JavaType javaType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructParametricType(parametrized, parameterClasses);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, javaType);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -282,8 +289,8 @@ public final class JacksonUtil {
      */
     public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element) {
         try {
-            CollectionType type = MAPPER_WITH_FORMAT.getTypeFactory().constructCollectionType(collection, element);
-            return MAPPER_WITH_FORMAT.readValue(json, type);
+            CollectionType type = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructCollectionType(collection, element);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<E> failed:" + json, e);
         }
@@ -304,8 +311,8 @@ public final class JacksonUtil {
      */
     public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            MapType type = MAPPER_WITH_FORMAT.getTypeFactory().constructMapType(map, key, value);
-            return MAPPER_WITH_FORMAT.readValue(json, type);
+            MapType type = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructMapType(map, key, value);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Map<K, V> failed:" + json, e);
         }
@@ -321,9 +328,9 @@ public final class JacksonUtil {
      */
     public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
         try {
-            MapType mapType = MAPPER_WITH_FORMAT.getTypeFactory().constructMapType(map, key, value);
-            CollectionType collectionType = MAPPER_WITH_FORMAT.getTypeFactory().constructCollectionType(collection, mapType);
-            return MAPPER_WITH_FORMAT.readValue(json, collectionType);
+            MapType mapType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructMapType(map, key, value);
+            CollectionType collectionType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructCollectionType(collection, mapType);
+            return MAPPER_WITHOUT_FORMAT.readValue(json, collectionType);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<Map<K, V>>> failed:" + json, e);
         }
@@ -341,7 +348,11 @@ public final class JacksonUtil {
      * @param type  type name of child class
      */
     public static void registerSubtype(Class<?> clazz, String type) {
-        MAPPER_WITH_FORMAT.registerSubtypes(new NamedType(clazz, type));
+        registerSubtype(clazz, type, false);
+    }
+
+    public static void registerSubtype(Class<?> clazz, String type, boolean format) {
+        createMapper(format).registerSubtypes(new NamedType(clazz, type));
     }
 
     /**
@@ -350,8 +361,13 @@ public final class JacksonUtil {
      * @return {@link ObjectNode}
      */
     public static ObjectNode createEmptyJsonNode() {
-        return new ObjectNode(MAPPER_WITH_FORMAT.getNodeFactory());
+        return createEmptyJsonNode(false);
     }
+
+    public static ObjectNode createEmptyJsonNode(boolean format) {
+        return new ObjectNode(createMapper(format).getNodeFactory());
+    }
+
 
     /**
      * Create a new empty Jackson {@link ArrayNode}.
@@ -359,7 +375,11 @@ public final class JacksonUtil {
      * @return {@link ArrayNode}
      */
     public static ArrayNode createEmptyArrayNode() {
-        return new ArrayNode(MAPPER_WITH_FORMAT.getNodeFactory());
+        return createEmptyArrayNode(false);
+    }
+
+    public static ArrayNode createEmptyArrayNode(boolean format) {
+        return new ArrayNode(createMapper(format).getNodeFactory());
     }
 
     /**
@@ -369,7 +389,11 @@ public final class JacksonUtil {
      * @return {@link JsonNode}
      */
     public static JsonNode transferToJsonNode(Object obj) {
-        return MAPPER_WITH_FORMAT.valueToTree(obj);
+        return transferToJsonNode(obj, false);
+    }
+
+    public static JsonNode transferToJsonNode(Object obj, boolean format) {
+        return createMapper(format).valueToTree(obj);
     }
 
     /**
@@ -379,6 +403,10 @@ public final class JacksonUtil {
      * @return JavaType {@link JavaType}
      */
     public static JavaType constructJavaType(Type type) {
-        return MAPPER_WITH_FORMAT.constructType(type);
+        return constructJavaType(type, false);
+    }
+
+    public static JavaType constructJavaType(Type type, boolean format) {
+        return createMapper(format).constructType(type);
     }
 }

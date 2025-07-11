@@ -18,10 +18,9 @@ public class ResponseMsgUtil {
      * 统一返回结果
      */
     private static <T> Result<T> builderResponse(int code, String message, T data) {
-        Result<T> result = new Result<>();
+        Result<T> result = new Result<>(data);
         result.setCode(code);
         result.setMessage(message);
-        result.setData(data);
         return result;
     }
 
