@@ -9,7 +9,7 @@ import java.lang.${pkJavaType};
  * ${description} - Service接口类
  *
  * @author ${author}
- * @date ${date}
+ * @since ${date}
  */
 public interface ${domainNameUpperCamel}Service
         extends BaseService<${domainNameUpperCamel}, ${domainNameUpperCamel}VO, ${pkJavaType}> {

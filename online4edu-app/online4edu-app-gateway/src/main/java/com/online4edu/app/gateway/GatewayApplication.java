@@ -8,7 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * 网关启动类
  *
  * @author mingrn97 <br > mingrn97@gmail.com
- * @date 2021/02/28 19:23
+ * @since 2021/02/28 19:23
  */
 @SpringBootApplication
 public class GatewayApplication {

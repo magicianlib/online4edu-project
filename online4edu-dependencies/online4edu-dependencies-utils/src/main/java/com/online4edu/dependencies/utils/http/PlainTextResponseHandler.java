@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * corresponding message flow into a text string. Such as the clear know
  * response message for a JSON string or HTML, XML data.
  *
- * @author Shilin <br > mingrn97@gmail.com
+ * @author magicianlib@gmail.com
  * @since 2021/12/24 20:42
  */
 class PlainTextResponseHandler implements ResponseHandler<String> {

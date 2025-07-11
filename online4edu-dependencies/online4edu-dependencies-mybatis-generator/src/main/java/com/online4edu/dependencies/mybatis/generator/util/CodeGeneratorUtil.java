@@ -15,7 +15,7 @@ import java.util.ServiceLoader;
  * 数据表 Mapper、Model、VO、Mapper.xml 文件生成工具类
  *
  * @author MinGRn <br > MinGRn97@gmail.com
- * @date 18/10/2018 13:05
+ * @since 18/10/2018 13:05
  */
 public class CodeGeneratorUtil {
 

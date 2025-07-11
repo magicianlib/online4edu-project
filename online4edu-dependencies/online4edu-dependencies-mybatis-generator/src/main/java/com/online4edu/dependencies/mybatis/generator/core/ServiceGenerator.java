@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * Service 接口文件生成
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 21:41
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 21:41
  */
 public class ServiceGenerator implements Generator {
 

@@ -11,20 +11,25 @@ import java.util.List;
 import java.util.Objects;
 
 public class MoneyUtil {
+    public static void apportionByWeights(BigDecimal pie, List<Weight> weights) {
+        apportionByWeights(pie, weights, 2);
+    }
+
     /**
      * 根据权重平摊份额
      *
      * @param pie     总份额
      * @param weights 权重
+     * @param scale   保留小数位数
      */
-    public static void apportionByWeights(BigDecimal pie, List<Weight> weights) {
+    public static void apportionByWeights(BigDecimal pie, List<Weight> weights, int scale) {
         if (Objects.isNull(pie) || CollectionUtils.isEmpty(weights)) {
             throw new RuntimeException("分摊权重未设置");
         }
 
         long distinct = weights.stream().map(Weight::getId).distinct().count();
         if (weights.size() != distinct) {
-            throw new RuntimeException("存在重复的权重值");
+            throw new RuntimeException("存在重复权重值");
         }
 
         BigDecimal totalWeight = weights.stream().map(Weight::getWeight).reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -38,7 +43,7 @@ public class MoneyUtil {
             lastWeight = weight;
 
             // DECIMAL32防止无限循环小数导致异常，小数点后2位的直接舍去
-            BigDecimal result = weight.getWeight().divide(totalWeight, MathContext.DECIMAL32).multiply(pie).setScale(2, RoundingMode.DOWN);
+            BigDecimal result = weight.getWeight().divide(totalWeight, MathContext.DECIMAL32).multiply(pie).setScale(scale, RoundingMode.DOWN);
             weight.setResult(result);
 
             if (BigDecimalUtil.isNotEqZero(weight.getWeight())) {
@@ -50,7 +55,9 @@ public class MoneyUtil {
         BigDecimal allocated = weights.stream().map(Weight::getResult).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal residue = pie.subtract(allocated); // 剩余
 
-        if (BigDecimalUtil.isEqZero(lastWeight.getResult())) { // 最后一个结果为0，就将剩余金额
+        // 如果最后一个权重值为0，表示该权重不参与分摊计算，将最后剩余的
+        // 部分累加全部给最后一个权重不为0的数据
+        if (BigDecimalUtil.isEqZero(lastWeight.getWeight())) {
             if (Objects.nonNull(lastNotZeroWeight)) {
                 lastNotZeroWeight.add(residue);
             }

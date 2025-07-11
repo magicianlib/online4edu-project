@@ -5,8 +5,8 @@ import java.io.Serializable;
 /**
  * 普通实体父类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/07 17:14
+ * @author magicianlib@gmail.com
+ * @since 2021/03/07 17:14
  */
 public class Convert implements Serializable {
 

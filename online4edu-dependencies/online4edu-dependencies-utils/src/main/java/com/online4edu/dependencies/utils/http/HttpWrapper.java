@@ -38,8 +38,8 @@ import java.util.Map;
 /**
  * 基础工具
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/12/24 20:44
+ * @author magicianlib@gmail.com
+ * @since 2021/12/24 20:44
  */
 class HttpWrapper {
 

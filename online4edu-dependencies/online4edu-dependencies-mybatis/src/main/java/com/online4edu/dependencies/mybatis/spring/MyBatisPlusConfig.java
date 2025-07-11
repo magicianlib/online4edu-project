@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 /**
  * MyBatis Plus 配置类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/07 16:49
+ * @author magicianlib@gmail.com
+ * @since 2021/03/07 16:49
  */
 @Configuration
 public class MyBatisPlusConfig {

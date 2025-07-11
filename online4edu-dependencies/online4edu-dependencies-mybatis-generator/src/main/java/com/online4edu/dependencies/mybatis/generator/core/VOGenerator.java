@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * VO 扩展文件生成
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 21:41
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 21:41
  */
 public class VOGenerator implements Generator {
 

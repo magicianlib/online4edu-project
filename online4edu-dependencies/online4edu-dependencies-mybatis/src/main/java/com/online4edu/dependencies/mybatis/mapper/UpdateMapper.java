@@ -12,8 +12,8 @@ import java.io.Serializable;
  * <p>
  * 基于 Mybatis Plus 做删减
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/07 16:52
+ * @author magicianlib@gmail.com
+ * @since 2021/03/07 16:52
  * @see com.baomidou.mybatisplus.core.mapper.BaseMapper
  */
 public interface UpdateMapper<T, V extends T, Pk extends Serializable> {

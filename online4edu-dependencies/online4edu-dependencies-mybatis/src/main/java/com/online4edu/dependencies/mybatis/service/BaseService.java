@@ -12,8 +12,8 @@ import java.io.Serializable;
  * <p>
  * 该 Service 继承的接口都是基于 Mybatis-plus 做的扩展
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/05 23:59
+ * @author magicianlib@gmail.com
+ * @since 2021/03/05 23:59
  * @see com.baomidou.mybatisplus.core.mapper.BaseMapper
  */
 public interface BaseService<T, V extends T, Pk extends Serializable>

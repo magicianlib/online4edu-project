@@ -8,8 +8,8 @@ import lombok.ToString;
 /**
  * 项目基础信息
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/13 12:08
+ * @author magicianlib@gmail.com
+ * @since 2021/03/13 12:08
  */
 @Getter
 @Setter

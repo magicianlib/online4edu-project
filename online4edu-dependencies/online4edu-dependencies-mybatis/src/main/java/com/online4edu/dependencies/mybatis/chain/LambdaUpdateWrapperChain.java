@@ -12,8 +12,8 @@ import java.io.Serializable;
 /**
  * Lambda 修改 Wrapper
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/06 00:02
+ * @author magicianlib@gmail.com
+ * @since 2021/03/06 00:02
  */
 public class LambdaUpdateWrapperChain<T, V extends T, Pk extends Serializable>
         extends AbstractChainWrapper<T, SFunction<T, ?>, LambdaUpdateWrapperChain<T, V, Pk>, LambdaUpdateWrapper<T>>

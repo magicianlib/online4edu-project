@@ -20,8 +20,8 @@ import java.util.List;
 /**
  * Swagger 配置
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/13 22:01
+ * @author magicianlib@gmail.com
+ * @since 2021/03/13 22:01
  */
 @Configuration
 @EnableSwagger2

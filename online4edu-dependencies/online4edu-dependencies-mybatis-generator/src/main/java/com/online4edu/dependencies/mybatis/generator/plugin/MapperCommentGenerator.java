@@ -15,8 +15,8 @@ import java.util.Properties;
 /**
  * Mapper 注释生成
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/12 10:21
+ * @author magicianlib@gmail.com
+ * @since 2021/03/12 10:21
  */
 public class MapperCommentGenerator implements CommentGenerator {
 

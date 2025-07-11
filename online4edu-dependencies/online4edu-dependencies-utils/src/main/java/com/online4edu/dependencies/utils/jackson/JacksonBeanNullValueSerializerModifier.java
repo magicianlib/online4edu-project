@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Jackson 序列化时对 NULL 值处理
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2022/04/19 16:21
+ * @author magicianlib@gmail.com
+ * @since 2022/04/19 16:21
  */
 public class JacksonBeanNullValueSerializerModifier extends BeanSerializerModifier {
 
@@ -41,7 +41,7 @@ public class JacksonBeanNullValueSerializerModifier extends BeanSerializerModifi
                 // Boolean Fill ZERO
                 writer.assignNullSerializer(new NullBigDecimalSerializer());
 
-            }  else if (rawClass.isAssignableFrom(Number.class)) {
+            } else if (rawClass.isAssignableFrom(Number.class)) {
                 // Boolean Fill ZERO
                 writer.assignNullSerializer(new NullNumberSerializer());
 
@@ -91,7 +91,7 @@ public class JacksonBeanNullValueSerializerModifier extends BeanSerializerModifi
             gen.writeString("0");
         }
     }
-    
+
     public static class NullNumberSerializer extends JsonSerializer<Object> {
         @Override
         public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {

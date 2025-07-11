@@ -80,7 +80,7 @@ import java.sql.Types;
  * 所以, 对于年龄显然不合适. 因此我们需要将其映射为 Integer.
  *
  * @author MinGRn <br > MinGRn97@gmail.com
- * @date 14/08/2020 16:13
+ * @since 14/08/2020 16:13
  */
 public class SimpleJavaTypeResolverImpl extends JavaTypeResolverDefaultImpl {
 

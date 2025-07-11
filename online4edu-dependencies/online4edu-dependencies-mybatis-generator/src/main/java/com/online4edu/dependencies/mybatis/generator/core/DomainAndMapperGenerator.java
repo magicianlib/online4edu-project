@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * 生成实体类和Mapper文件
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 21:04
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 21:04
  */
 public class DomainAndMapperGenerator implements Generator {
 

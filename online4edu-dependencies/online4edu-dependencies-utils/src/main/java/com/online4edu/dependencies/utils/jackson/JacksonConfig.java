@@ -21,8 +21,8 @@ import java.time.LocalTime;
 /**
  * Jackson Config
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/12/24 20:40
+ * @author magicianlib@gmail.com
+ * @since 2021/12/24 20:40
  */
 public final class JacksonConfig {
 
@@ -35,15 +35,15 @@ public final class JacksonConfig {
 
         JavaTimeModule javaTimeModule = new JavaTimeModule();
 
-        // LocalTime 序列化和反序列化配置
+        // LocalTime 序列化和反序列化配置 HH:mm:ss
         javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateFormatUtil.ISO_LOCAL_TIME));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateFormatUtil.ISO_LOCAL_TIME));
 
-        // LocalDate 序列化和反序列化配置
+        // LocalDate 序列化和反序列化配置 yyyy-MM-dd
         javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateFormatUtil.ISO_LOCAL_DATE));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateFormatUtil.ISO_LOCAL_DATE));
 
-        // LocalDateTime 序列化和反序列化配置
+        // LocalDateTime 序列化和反序列化配置 yyyy-MM-dd HH:mm:ss
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateFormatUtil.DATE_TIME));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateFormatUtil.DATE_TIME));
 

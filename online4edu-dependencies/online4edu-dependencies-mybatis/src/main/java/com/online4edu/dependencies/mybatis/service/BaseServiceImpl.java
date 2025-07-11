@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
  * <p>
  * 借助 BeanFactoryPostProcessor 完成依赖注入
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/06 00:18
+ * @author magicianlib@gmail.com
+ * @since 2021/03/06 00:18
  * @see com.online4edu.dependencies.mybatis.spring.MyBatisPlusBeanFactoryPostProcessor
  */
 @Slf4j

@@ -12,8 +12,8 @@ import java.util.Date;
 /**
  * table 表信息
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 20:59
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 20:59
  */
 @Getter
 @Setter

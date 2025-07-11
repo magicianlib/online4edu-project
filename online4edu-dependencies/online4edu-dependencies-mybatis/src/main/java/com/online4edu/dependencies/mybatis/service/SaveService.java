@@ -9,8 +9,8 @@ import java.util.Collection;
  * <p>
  * 基于 Mybatis-plus 做 Service 层扩展
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/05 18:57
+ * @author magicianlib@gmail.com
+ * @since 2021/03/05 18:57
  * @see com.baomidou.mybatisplus.core.mapper.BaseMapper
  */
 public interface SaveService<T, V extends T, Pk extends Serializable>

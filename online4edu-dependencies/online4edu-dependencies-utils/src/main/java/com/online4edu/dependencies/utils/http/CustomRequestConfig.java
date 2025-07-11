@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Custom Http Client Request Config
  *
- * @author Shilin <br > mingrn97@gmail.com
+ * @author magicianlib@gmail.com
  * @see org.apache.http.client.config.RequestConfig.Builder
  * @since 2021/12/24 20:42
  */

@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 /**
  * Jackson 自定义日期时间反序列化扩展
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/13 16:38
+ * @author magicianlib@gmail.com
+ * @since 2021/03/13 16:38
  */
 public class LocalDateTimeJsonSerializer extends JsonSerializer<LocalDateTime> {
     @Override

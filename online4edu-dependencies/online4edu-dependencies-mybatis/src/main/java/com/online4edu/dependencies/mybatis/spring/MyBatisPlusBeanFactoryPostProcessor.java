@@ -15,8 +15,8 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
  * 将该后置处理器注入 Spring, 不需要在 {@link BaseServiceImpl#setBaseMapper(BaseMapper)}
  * 上增加 {@link org.springframework.beans.factory.annotation.Autowired} 注解
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/15 10:12
+ * @author magicianlib@gmail.com
+ * @since 2021/03/15 10:12
  * @see BaseServiceImpl#setBaseMapper(BaseMapper)
  */
 public class MyBatisPlusBeanFactoryPostProcessor implements BeanFactoryPostProcessor {

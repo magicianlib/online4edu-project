@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * 文件生成
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 20:49
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 20:49
  */
 public interface Generator {
 

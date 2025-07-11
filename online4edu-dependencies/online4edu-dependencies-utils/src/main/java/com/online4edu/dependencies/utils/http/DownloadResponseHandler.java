@@ -14,8 +14,8 @@ import java.io.OutputStream;
  * internal processing IO flow, not the data output to the outside. So if you
  * want the I/O output to the specified location can use {@link OutputStream}
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/12/24 20:42
+ * @author magicianlib@gmail.com
+ * @since 2021/12/24 20:42
  */
 class DownloadResponseHandler implements ResponseHandler<Void> {
 

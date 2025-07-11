@@ -5,8 +5,8 @@ package com.online4edu.dependencies.utils.exception;
  *
  * <p>拷贝 {@link RuntimeException}</p>
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/08 15:41
+ * @author magicianlib@gmail.com
+ * @since 2021/03/08 15:41
  */
 public class ServiceException extends RuntimeException {
 

@@ -12,8 +12,8 @@ import java.util.Collection;
  * <p>
  * 基于 Mybatis-plus 做 Service 层扩展
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/05 23:44
+ * @author magicianlib@gmail.com
+ * @since 2021/03/05 23:44
  */
 public interface DeleteService<T, V extends T, Pk extends Serializable> {
 

@@ -20,8 +20,8 @@ import java.util.function.Predicate;
 /**
  * Lambda 查询 Wrapper
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/06 00:03
+ * @author magicianlib@gmail.com
+ * @since 2021/03/06 00:03
  */
 @SuppressWarnings("unchecked")
 public class LambdaQueryWrapperChain<T, V extends T, Pk extends Serializable>

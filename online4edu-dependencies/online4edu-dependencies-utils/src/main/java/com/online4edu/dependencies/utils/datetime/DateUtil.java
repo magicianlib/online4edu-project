@@ -10,7 +10,7 @@ import java.util.function.Function;
 /**
  * 日期格式化
  *
- * @author Shilin <br > mingrn97@gmail.com
+ * @author magicianlib@gmail.com
  * @since 2023/09/26 15:27
  */
 public final class DateUtil {

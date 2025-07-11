@@ -14,8 +14,8 @@ import java.util.Collections;
 /**
  * 自定义 Jackson Http 消息转换器
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/13 17:05
+ * @author magicianlib@gmail.com
+ * @since 2021/03/13 17:05
  */
 @Configuration
 public class MessageConvertConfiguration {

@@ -6,8 +6,8 @@ import org.apache.ibatis.reflection.MetaObject;
 /**
  * 通用填充类, 适用于mybatis plus
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/07 16:50
+ * @author magicianlib@gmail.com
+ * @since 2021/03/07 16:50
  */
 public class CommonMetaObjectHandler implements MetaObjectHandler {
 

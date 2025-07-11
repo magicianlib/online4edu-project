@@ -6,8 +6,8 @@ import org.apache.commons.text.RandomStringGenerator;
 /**
  * 随机字符/数生成工具类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2022/01/31 20:55
+ * @author magicianlib@gmail.com
+ * @since 2022/01/31 20:55
  * @see RandomStringGenerator
  * @see org.apache.commons.lang3.RandomStringUtils
  */

@@ -17,8 +17,8 @@ import java.util.function.Predicate;
 /**
  * Decimal Util
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2022/04/10 15:49
+ * @author magicianlib@gmail.com
+ * @since 2022/04/10 15:49
  */
 public class DecimalUtil {
 

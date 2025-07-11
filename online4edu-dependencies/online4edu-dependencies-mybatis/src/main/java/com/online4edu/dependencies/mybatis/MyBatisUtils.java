@@ -6,8 +6,8 @@ import org.apache.ibatis.logging.LogFactory;
 /**
  * mybatis 工具类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/06 00:02
+ * @author magicianlib@gmail.com
+ * @since 2021/03/06 00:02
  */
 public final class MyBatisUtils {
 

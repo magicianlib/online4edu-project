@@ -6,8 +6,8 @@ import freemarker.template.TemplateExceptionHandler;
 /**
  * 工具类
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/30 21:16
+ * @author magicianlib@gmail.com
+ * @since 2021/03/30 21:16
  */
 public class AutoUtil {
 

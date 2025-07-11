@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 /**
  * Lambda 删除 Wrapper
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/06 00:04
+ * @author magicianlib@gmail.com
+ * @since 2021/03/06 00:04
  */
 public class LambdaDeleteWrapperChain<T, V extends T, Pk extends Serializable>
         extends AbstractChainWrapper<T, SFunction<T, ?>, LambdaDeleteWrapperChain<T, V, Pk>, LambdaQueryWrapper<T>>

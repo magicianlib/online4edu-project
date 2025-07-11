@@ -18,8 +18,8 @@ import java.util.*;
 /**
  * Mapper 增强插件
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/12 10:22
+ * @author magicianlib@gmail.com
+ * @since 2021/03/12 10:22
  */
 public class MapperPluginAdapter extends PluginAdapter {
 

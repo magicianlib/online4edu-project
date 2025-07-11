@@ -4,15 +4,15 @@ import com.online4edu.dependencies.mybatis.generator.util.CodeGeneratorUtil;
 import org.junit.Test;
 
 /**
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/13 12:38
+ * @author magicianlib@gmail.com
+ * @since 2021/03/13 12:38
  */
 public class MyBatisGenerator {
 
     private static final String JDBC_URL = "jdbc:mysql://localhost/test?useSSL=false";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "admin123";
-    private static final String AUTHOR = "Shilin <br > mingrn97@gmail.com";
+    private static final String AUTHOR = "magicianlib@gmail.com";
     private static final String PROJECT_PATH = System.getProperty("user.dir");
     private static final String PROJECT_PACKAGE = "com.online4edu.app.gateway";
 

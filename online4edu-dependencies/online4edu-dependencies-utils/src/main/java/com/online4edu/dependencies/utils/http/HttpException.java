@@ -3,7 +3,7 @@ package com.online4edu.dependencies.utils.http;
 /**
  * Custom Http Client Exception
  *
- * @author Shilin <br > mingrn97@gmail.com
+ * @author magicianlib@gmail.com
  * @since 2021/12/24 20:43
  */
 public class HttpException extends RuntimeException {

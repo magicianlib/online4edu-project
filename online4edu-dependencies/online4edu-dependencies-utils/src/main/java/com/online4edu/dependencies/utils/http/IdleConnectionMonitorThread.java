@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 监控线程池 {@link HttpClientConnectionManager} 过期及空闲的连接
  *
- * @author Shilin <br > mingrn97@gmail.com
+ * @author magicianlib@gmail.com
  * @since 2021/12/24 20:44
  */
 class IdleConnectionMonitorThread extends Thread {

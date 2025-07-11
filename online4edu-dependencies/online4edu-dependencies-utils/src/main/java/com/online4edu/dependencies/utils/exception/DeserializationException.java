@@ -5,8 +5,8 @@ import java.lang.reflect.Type;
 /**
  * 反序列化异常
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/04/23 16:21
+ * @author magicianlib@gmail.com
+ * @since 2021/04/23 16:21
  */
 public class DeserializationException extends ServiceException {
 

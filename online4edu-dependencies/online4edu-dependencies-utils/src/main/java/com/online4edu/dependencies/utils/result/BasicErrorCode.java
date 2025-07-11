@@ -3,8 +3,8 @@ package com.online4edu.dependencies.utils.result;
 /**
  * 基础响应码
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/04/23 15:58
+ * @author magicianlib@gmail.com
+ * @since 2021/04/23 15:58
  */
 enum BasicErrorCode implements ErrorCode {
 

@@ -3,8 +3,8 @@ package com.online4edu.dependencies.utils.exception;
 /**
  * 序列化异常
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/03/08 15:45
+ * @author magicianlib@gmail.com
+ * @since 2021/03/08 15:45
  */
 public class SerializationException extends ServiceException {
 

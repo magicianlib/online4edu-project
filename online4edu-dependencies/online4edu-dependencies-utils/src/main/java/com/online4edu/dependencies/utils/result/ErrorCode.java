@@ -42,8 +42,8 @@ package com.online4edu.dependencies.utils.result;
  * }
  * }
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2021/04/23 15:56
+ * @author magicianlib@gmail.com
+ * @since 2021/04/23 15:56
  * @see BasicErrorCode
  */
 public interface ErrorCode {

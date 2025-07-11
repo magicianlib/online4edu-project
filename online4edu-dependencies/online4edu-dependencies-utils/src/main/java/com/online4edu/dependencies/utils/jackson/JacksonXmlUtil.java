@@ -81,8 +81,8 @@ public class JacksonXmlUtil {
         // 忽略未知字段
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        // 序列化所有字段
-        mapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+        // 序列化时忽略空值
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         // 设置时区
         mapper.setTimeZone(TimeZone.getDefault());

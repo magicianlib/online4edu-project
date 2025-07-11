@@ -7,8 +7,8 @@ import java.io.Serializable;
 /**
  * Bean Json 输出
  *
- * @author Shilin <br > mingrn97@gmail.com
- * @date 2022/04/22 16:11
+ * @author magicianlib@gmail.com
+ * @since 2022/04/22 16:11
  */
 public abstract class PrintFriendliness extends Convert implements Serializable {
 
