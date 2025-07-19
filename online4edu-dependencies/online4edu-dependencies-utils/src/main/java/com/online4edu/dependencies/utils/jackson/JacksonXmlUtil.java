@@ -20,7 +20,6 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -40,8 +39,8 @@ public class JacksonXmlUtil {
      */
     private static final XmlMapper XML_WITHOUT_DECLARATION = createXmlMapper(false, false);
 
-    public static XmlMapper createMapper() {
-        return createMapper(false);
+    public static XmlMapper getXmlMapper() {
+        return getXmlMapper(false);
     }
 
     /**
@@ -50,7 +49,7 @@ public class JacksonXmlUtil {
      *     <?xml version="1.0" encoding="UTF-8"?>
      * </pre></p>
      */
-    public static XmlMapper createMapper(boolean includeDeclaration) {
+    public static XmlMapper getXmlMapper(boolean includeDeclaration) {
         return includeDeclaration ? XML_WITH_DECLARATION : XML_WITHOUT_DECLARATION;
     }
 
@@ -117,12 +116,16 @@ public class JacksonXmlUtil {
      * @throws SerializationException if transfer failed
      */
     public static String toXml(Object obj) {
-        return toXml(obj, false);
+        return toXml(obj, getXmlMapper());
     }
 
     public static String toXml(Object obj, boolean includeDeclaration) {
+        return toXml(obj, getXmlMapper(includeDeclaration));
+    }
+
+    public static String toXml(Object obj, final XmlMapper xmlMapper) {
         try {
-            return createMapper(includeDeclaration).writeValueAsString(obj);
+            return xmlMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -133,8 +136,12 @@ public class JacksonXmlUtil {
     }
 
     public static byte[] toXmlBytes(Object obj, boolean includeDeclaration) {
+        return toXmlBytes(obj, getXmlMapper(includeDeclaration));
+    }
+
+    public static byte[] toXmlBytes(Object obj, final XmlMapper xmlMapper) {
         try {
-            return createMapper(includeDeclaration).writeValueAsBytes(obj);
+            return xmlMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -145,8 +152,12 @@ public class JacksonXmlUtil {
     }
 
     public static void toXml(Writer w, Object obj, boolean includeDeclaration) {
+        toXml(w, obj, getXmlMapper(includeDeclaration));
+    }
+
+    public static void toXml(Writer w, Object obj, final XmlMapper xmlMapper) {
         try {
-            createMapper(includeDeclaration).writeValue(w, obj);
+            xmlMapper.writeValue(w, obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -157,8 +168,12 @@ public class JacksonXmlUtil {
     }
 
     public static void toXml(OutputStream out, Object obj, boolean includeDeclaration) {
+        toXml(out, obj, getXmlMapper(includeDeclaration));
+    }
+
+    public static void toXml(OutputStream out, Object obj, final XmlMapper xmlMapper) {
         try {
-            createMapper(includeDeclaration).writeValue(out, obj);
+            xmlMapper.writeValue(out, obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -172,101 +187,124 @@ public class JacksonXmlUtil {
     }
 
     public static <T> T toObj(byte[] xml, Class<T> clazz, boolean includeDeclaration) {
-        return toObj(new String(xml, StandardCharsets.UTF_8), clazz, includeDeclaration);
+        return toObj(xml, clazz, getXmlMapper(includeDeclaration));
     }
 
-    public static <T> T toObj(byte[] xml, Type clazz) {
-        return toObj(new String(xml, StandardCharsets.UTF_8), clazz, false);
-    }
-
-    public static <T> T toObj(byte[] xml, TypeReference<T> typeReference) {
-        return toObj(new String(xml, StandardCharsets.UTF_8), typeReference, false);
-    }
-
-    /**
-     * XML InputStream 反序列化为对象
-     *
-     * @param inputStream        xml输入流
-     * @param clazz              类型
-     * @param includeDeclaration 是否包含 xml 声明
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(InputStream inputStream, Class<T> clazz, boolean includeDeclaration) {
+    public static <T> T toObj(byte[] xml, Class<T> clazz, final XmlMapper xmlMapper) {
         try {
-            return createMapper(includeDeclaration).readValue(inputStream, clazz);
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-
-    /**
-     * XML 字符串反序列化为对象
-     *
-     * @param xml                xml字符串
-     * @param type               类型
-     * @param includeDeclaration 是否包含 xml 声明
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String xml, Type type, boolean includeDeclaration) {
-        try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            return XML.readValue(xml, XML.constructType(type));
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * XML 字符串反序列化为对象
-     *
-     * @param xml                xml字符串
-     * @param clazz              类型
-     * @param includeDeclaration 是否包含 xml 声明
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String xml, Class<T> clazz, boolean includeDeclaration) {
-        try {
-            return createMapper(includeDeclaration).readValue(xml, clazz);
+            return xmlMapper.readValue(xml, clazz);
         } catch (IOException e) {
             throw new DeserializationException(clazz, e);
         }
     }
 
+    public static <T> T toObj(byte[] xml, Type type) {
+        return toObj(xml, type, false);
+    }
 
-    /**
-     * XML 字符串反序列化为对象
-     *
-     * @param xml                xml字符串
-     * @param typeReference      类型
-     * @param includeDeclaration 是否包含 xml 声明
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String xml, TypeReference<T> typeReference, boolean includeDeclaration) {
+    public static <T> T toObj(byte[] xml, Type type, boolean includeDeclaration) {
+        return toObj(xml, type, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(byte[] xml, Type type, final XmlMapper xmlMapper) {
         try {
-            return createMapper(includeDeclaration).readValue(xml, typeReference);
+            return xmlMapper.readValue(xml, xmlMapper.constructType(type));
+        } catch (IOException e) {
+            throw new DeserializationException(type, e);
+        }
+    }
+
+    public static <T> T toObj(byte[] xml, TypeReference<T> typeReference) {
+        return toObj(xml, typeReference, false);
+    }
+
+    public static <T> T toObj(byte[] xml, TypeReference<T> typeReference, boolean includeDeclaration) {
+        return toObj(xml, typeReference, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(byte[] xml, TypeReference<T> typeReference, final XmlMapper xmlMapper) {
+        try {
+            return xmlMapper.readValue(xml, typeReference);
         } catch (IOException e) {
             throw new DeserializationException(typeReference.getClass(), e);
         }
     }
 
-    /**
-     * XML InputStream 反序列化为对象
-     *
-     * @param inputStream        输入流
-     * @param type               类型
-     * @param includeDeclaration 是否包含 xml 声明
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(InputStream inputStream, Type type, boolean includeDeclaration) {
+    public static <T> T toObj(InputStream inputStream, Class<T> clazz) {
+        return toObj(inputStream, clazz, false);
+    }
+
+    public static <T> T toObj(InputStream inputStream, Class<T> clazz, boolean includeDeclaration) {
+        return toObj(inputStream, clazz, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(InputStream inputStream, Class<T> clazz, final XmlMapper xmlMapper) {
         try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            return XML.readValue(inputStream, XML.constructType(type));
+            return xmlMapper.readValue(inputStream, clazz);
+        } catch (IOException e) {
+            throw new DeserializationException(e);
+        }
+    }
+
+    public static <T> T toObj(String xml, Type type) {
+        return toObj(xml, type, false);
+    }
+
+    public static <T> T toObj(String xml, Type type, boolean includeDeclaration) {
+        return toObj(xml, type, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(String xml, Type type, final XmlMapper xmlMapper) {
+        try {
+            return xmlMapper.readValue(xml, xmlMapper.constructType(type));
+        } catch (IOException e) {
+            throw new DeserializationException(e);
+        }
+    }
+
+    public static <T> T toObj(String xml, Class<T> clazz) {
+        return toObj(xml, clazz, false);
+    }
+
+    public static <T> T toObj(String xml, Class<T> clazz, boolean includeDeclaration) {
+        return toObj(xml, clazz, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(String xml, Class<T> clazz, final XmlMapper xmlMapper) {
+        try {
+            return xmlMapper.readValue(xml, clazz);
+        } catch (IOException e) {
+            throw new DeserializationException(clazz, e);
+        }
+    }
+
+    public static <T> T toObj(String xml, TypeReference<T> typeReference) {
+        return toObj(xml, typeReference, false);
+    }
+
+    public static <T> T toObj(String xml, TypeReference<T> typeReference, boolean includeDeclaration) {
+        return toObj(xml, typeReference, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(String xml, TypeReference<T> typeReference, final XmlMapper xmlMapper) {
+        try {
+            return xmlMapper.readValue(xml, typeReference);
+        } catch (IOException e) {
+            throw new DeserializationException(typeReference.getClass(), e);
+        }
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type) {
+        return toObj(inputStream, type, false);
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type, boolean includeDeclaration) {
+        return toObj(inputStream, type, getXmlMapper(includeDeclaration));
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type, final XmlMapper xmlMapper) {
+        try {
+            return xmlMapper.readValue(inputStream, xmlMapper.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(type, e);
         }
@@ -292,102 +330,17 @@ public class JacksonXmlUtil {
      * @throws DeserializationException if deserialize failed
      */
     public static <T> T toObj(String xml, boolean includeDeclaration, Class<T> general, Class<?>... parameterClasses) {
+        return toObj(xml, getXmlMapper(includeDeclaration), general, parameterClasses);
+    }
+
+    public static <T> T toObj(String xml, final XmlMapper xmlMapper, Class<T> general, Class<?>... parameterClasses) {
         try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            JavaType javaType = XML.getTypeFactory().constructParametricType(general, parameterClasses);
-            return XML.readValue(xml, javaType);
+            JavaType javaType = xmlMapper.getTypeFactory().constructParametricType(general, parameterClasses);
+            return xmlMapper.readValue(xml, javaType);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
     }
-
-    /*@SuppressWarnings("unchecked")
-    public static <E> ArrayList<E> toCollection(String xml, Class<E> element) {
-        return toCollection(xml, false, ArrayList.class, element);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <E> ArrayList<E> toCollection(String xml, boolean includeDeclaration, Class<E> element) {
-        return toCollection(xml, includeDeclaration, ArrayList.class, element);
-    }
-
-    public static <C extends Collection<E>, E> C toCollection(String xml, Class<C> collection, Class<E> element) {
-        return toCollection(xml, false, collection, element);
-    }*/
-
-    /**
-     * 将 XML 字符串转换为指定集合类型
-     */
-    /*public static <C extends Collection<E>, E> C toCollection(String xml, boolean includeDeclaration, Class<C> collection, Class<E> element) {
-        try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            CollectionType type = XML.getTypeFactory().constructCollectionType(collection, element);
-            return XML.readValue(xml, type);
-        } catch (Exception e) {
-            throw new RuntimeException("Parse xml to Collection<E> failed:" + xml, e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <K, V> HashMap<K, V> toMap(String xml, Class<K> key, Class<V> value) {
-        return toMap(xml, HashMap.class, key, value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <K, V> HashMap<K, V> toMap(String xml, boolean includeDeclaration, Class<K> key, Class<V> value) {
-        return toMap(xml, includeDeclaration, HashMap.class, key, value);
-    }
-
-
-    public static <K, V, H extends Map<K, V>> H toMap(String xml, Class<H> map, Class<K> key, Class<V> value) {
-        return toMap(xml, false, map, key, value);
-    }*/
-
-    /**
-     * 将 XML 字符串反序列化为 Map
-     * <p><pre>
-     * HashMap<String, String> data = toMap(xmlMap, HashMap.class, String.class, String.class);
-     * </pre></p>
-     *
-     * @throws RuntimeException 如果解析失败
-     */
-    /*public static <K, V, H extends Map<K, V>> H toMap(String xml, boolean includeDeclaration, Class<H> map, Class<K> key, Class<V> value) {
-        try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            MapType type = XML.getTypeFactory().constructMapType(map, key, value);
-            return XML.readValue(xml, type);
-        } catch (Exception e) {
-            throw new RuntimeException("Parse xml to Map<K, V> failed:" + xml, e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String xml, Class<K> key, Class<V> value) {
-        return toCollectionMap(xml, ArrayList.class, HashMap.class, key, value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String xml, boolean includeDeclaration, Class<K> key, Class<V> value) {
-        return toCollectionMap(xml, includeDeclaration, ArrayList.class, HashMap.class, key, value);
-    }
-
-    public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String xml, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
-        return toCollectionMap(xml, false, collection, map, key, value);
-    }*/
-
-    /**
-     * 将 XML 字符串转换为指定集合Map类型
-     */
-    /*public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String xml, boolean includeDeclaration, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
-        try {
-            XmlMapper XML = createMapper(includeDeclaration);
-            MapType mapType = XML.getTypeFactory().constructMapType(map, key, value);
-            CollectionType collectionType = XML.getTypeFactory().constructCollectionType(collection, mapType);
-            return XML.readValue(xml, collectionType);
-        } catch (Exception e) {
-            throw new RuntimeException("Parse xml to Collection<Map<K, V>>> failed:" + xml, e);
-        }
-    }*/
 
     // endregion toObj
 }

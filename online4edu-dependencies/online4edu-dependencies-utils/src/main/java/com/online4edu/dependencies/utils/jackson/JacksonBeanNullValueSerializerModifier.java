@@ -38,15 +38,15 @@ public class JacksonBeanNullValueSerializerModifier extends BeanSerializerModifi
                 writer.assignNullSerializer(new NullBooleanSerializer());
 
             } else if (rawClass.isAssignableFrom(BigDecimal.class)) {
-                // Boolean Fill ZERO
+                // BigDecimal Fill ZERO
                 writer.assignNullSerializer(new NullBigDecimalSerializer());
 
             } else if (rawClass.isAssignableFrom(Number.class)) {
-                // Boolean Fill ZERO
+                // Boolean Fill false
                 writer.assignNullSerializer(new NullNumberSerializer());
 
             } else if (rawClass.isAssignableFrom(String.class)) {
-                // Boolean Fill ""
+                // String Fill ""
                 writer.assignNullSerializer(new NullStringSerializer());
 
             }

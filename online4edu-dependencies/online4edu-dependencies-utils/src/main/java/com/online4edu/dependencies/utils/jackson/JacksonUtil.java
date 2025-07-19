@@ -38,11 +38,11 @@ public final class JacksonUtil {
     /**
      * 获取 ObjectMapper 实例
      */
-    public static ObjectMapper createMapper() {
-        return createMapper(false);
+    public static ObjectMapper getObjectMapper() {
+        return getObjectMapper(false);
     }
 
-    public static ObjectMapper createMapper(boolean format) {
+    public static ObjectMapper getObjectMapper(boolean format) {
         return format ? MAPPER_WITH_FORMAT : MAPPER_WITHOUT_FORMAT;
     }
 
@@ -90,16 +90,13 @@ public final class JacksonUtil {
         return toJson(obj, false);
     }
 
-    /**
-     * Object to json string.
-     *
-     * @param obj obj
-     * @return json string
-     * @throws SerializationException if transfer failed
-     */
     public static String toJson(Object obj, boolean format) {
+        return toJson(obj, getObjectMapper(format));
+    }
+
+    public static String toJson(Object obj, final ObjectMapper objectMapper) {
         try {
-            return createMapper(format).writeValueAsString(obj);
+            return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -109,16 +106,13 @@ public final class JacksonUtil {
         return toJsonBytes(obj, false);
     }
 
-    /**
-     * Object to json string byte array.
-     *
-     * @param obj obj
-     * @return json string byte array
-     * @throws SerializationException if transfer failed
-     */
     public static byte[] toJsonBytes(Object obj, boolean format) {
+        return toJsonBytes(obj, getObjectMapper(format));
+    }
+
+    public static byte[] toJsonBytes(Object obj, final ObjectMapper objectMapper) {
         try {
-            String json = createMapper(format).writeValueAsString(obj);
+            String json = objectMapper.writeValueAsString(obj);
             if (StringUtils.isNotBlank(json)) {
                 return json.getBytes(StandardCharsets.UTF_8);
             }
@@ -128,158 +122,158 @@ public final class JacksonUtil {
         }
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json  json string
-     * @param clazz class of object
-     * @param <T>   General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
     public static <T> T toObj(byte[] json, Class<T> clazz) {
-        try {
-            return toObj(new String(json, StandardCharsets.UTF_8), clazz);
-        } catch (Exception e) {
+        return toObj(json, clazz, false);
+    }
 
+    public static <T> T toObj(byte[] json, Class<T> clazz, boolean format) {
+        return toObj(json, clazz, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(byte[] json, Class<T> clazz, final ObjectMapper objectMapper) {
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (IOException e) {
             throw new DeserializationException(clazz, e);
         }
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json  json string
-     * @param clazz {@link Type} of object
-     * @param <T>   General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(byte[] json, Type clazz) {
+    public static <T> T toObj(byte[] json, Type type) {
+        return toObj(json, type, false);
+    }
+
+    public static <T> T toObj(byte[] json, Type type, boolean format) {
+        return toObj(json, type, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(byte[] json, Type type, final ObjectMapper objectMapper) {
         try {
-            return toObj(new String(json, StandardCharsets.UTF_8), clazz);
-        } catch (Exception e) {
+            return objectMapper.readValue(json, objectMapper.constructType(type));
+        } catch (IOException e) {
             throw new DeserializationException(e);
         }
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param inputStream json string input stream
-     * @param clazz       class of object
-     * @param <T>         General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
     public static <T> T toObj(InputStream inputStream, Class<T> clazz) {
+        return toObj(inputStream, clazz, false);
+    }
+
+    public static <T> T toObj(InputStream inputStream, Class<T> clazz, boolean format) {
+        return toObj(inputStream, clazz, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(InputStream inputStream, Class<T> clazz, final ObjectMapper objectMapper) {
         try {
-            return MAPPER_WITHOUT_FORMAT.readValue(inputStream, clazz);
+            return objectMapper.readValue(inputStream, clazz);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json          json string byte array
-     * @param typeReference {@link TypeReference} of object
-     * @param <T>           General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
     public static <T> T toObj(byte[] json, TypeReference<T> typeReference) {
-        try {
-            return toObj(new String(json, StandardCharsets.UTF_8), typeReference);
-        } catch (Exception e) {
-            throw new DeserializationException(e);
-        }
+        return toObj(json, typeReference, false);
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json  json string
-     * @param clazz class of object
-     * @param <T>   General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String json, Class<T> clazz) {
-        try {
-            return MAPPER_WITHOUT_FORMAT.readValue(json, clazz);
-        } catch (IOException e) {
-            throw new DeserializationException(clazz, e);
-        }
+    public static <T> T toObj(byte[] json, TypeReference<T> typeReference, boolean format) {
+        return toObj(json, typeReference, getObjectMapper(format));
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json json string
-     * @param type {@link Type} of object
-     * @param <T>  General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String json, Type type) {
+    public static <T> T toObj(byte[] json, TypeReference<T> typeReference, final ObjectMapper objectMapper) {
         try {
-            return MAPPER_WITHOUT_FORMAT.readValue(json, MAPPER_WITHOUT_FORMAT.constructType(type));
-        } catch (IOException e) {
-            throw new DeserializationException(e);
-        }
-    }
-
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param json          json string
-     * @param typeReference {@link TypeReference} of object
-     * @param <T>           General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(String json, TypeReference<T> typeReference) {
-        try {
-            return MAPPER_WITHOUT_FORMAT.readValue(json, typeReference);
+            return objectMapper.readValue(json, typeReference);
         } catch (IOException e) {
             throw new DeserializationException(typeReference.getClass(), e);
         }
     }
 
-    /**
-     * Json string deserialize to Object.
-     *
-     * @param inputStream json string input stream
-     * @param type        {@link Type} of object
-     * @param <T>         General type
-     * @return object
-     * @throws DeserializationException if deserialize failed
-     */
-    public static <T> T toObj(InputStream inputStream, Type type) {
+    public static <T> T toObj(String json, Class<T> clazz) {
+        return toObj(json, clazz, false);
+    }
+
+    public static <T> T toObj(String json, Class<T> clazz, boolean format) {
+        return toObj(json, clazz, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(String json, Class<T> clazz, final ObjectMapper objectMapper) {
         try {
-            return MAPPER_WITHOUT_FORMAT.readValue(inputStream, MAPPER_WITHOUT_FORMAT.constructType(type));
+            return objectMapper.readValue(json, clazz);
+        } catch (IOException e) {
+            throw new DeserializationException(clazz, e);
+        }
+    }
+
+    public static <T> T toObj(String json, Type type) {
+        return toObj(json, type, false);
+    }
+
+    public static <T> T toObj(String json, Type type, boolean format) {
+        return toObj(json, type, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(String json, Type type, final ObjectMapper objectMapper) {
+        try {
+            return objectMapper.readValue(json, objectMapper.constructType(type));
+        } catch (IOException e) {
+            throw new DeserializationException(e);
+        }
+    }
+
+    public static <T> T toObj(String json, TypeReference<T> typeReference) {
+        return toObj(json, typeReference, false);
+    }
+
+    public static <T> T toObj(String json, TypeReference<T> typeReference, boolean format) {
+        return toObj(json, typeReference, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(String json, TypeReference<T> typeReference, final ObjectMapper objectMapper) {
+        try {
+            return objectMapper.readValue(json, typeReference);
+        } catch (IOException e) {
+            throw new DeserializationException(typeReference.getClass(), e);
+        }
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type) {
+        return toObj(inputStream, type, false);
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type, boolean format) {
+        return toObj(inputStream, type, getObjectMapper(format));
+    }
+
+    public static <T> T toObj(InputStream inputStream, Type type, final ObjectMapper objectMapper) {
+        try {
+            return objectMapper.readValue(inputStream, objectMapper.constructType(type));
         } catch (IOException e) {
             throw new DeserializationException(type, e);
         }
     }
 
-    /**
-     * Json string deserialize to Jackson {@link JsonNode}.
-     *
-     * @param json json string
-     * @return {@link JsonNode}
-     * @throws DeserializationException if deserialize failed
-     */
     public static ObjectNode toObj(String json) {
         return toObj(json, ObjectNode.class);
     }
 
+    public static ObjectNode toObj(String json, boolean format) {
+        return toObj(json, ObjectNode.class, format);
+    }
+
+    public static ObjectNode toObj(String json, final ObjectMapper objectMapper) {
+        return toObj(json, ObjectNode.class, objectMapper);
+    }
+
     public static <T> T toObj(String json, Class<T> parametrized, Class<?>... parameterClasses) {
+        return toObj(json, false, parametrized, parameterClasses);
+    }
+
+    public static <T> T toObj(String json, boolean format, Class<T> parametrized, Class<?>... parameterClasses) {
+        return toObj(json, getObjectMapper(format), parametrized, parameterClasses);
+    }
+
+    public static <T> T toObj(String json, final ObjectMapper objectMapper, Class<T> parametrized, Class<?>... parameterClasses) {
         try {
-            JavaType javaType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructParametricType(parametrized, parameterClasses);
-            return MAPPER_WITHOUT_FORMAT.readValue(json, javaType);
+            JavaType javaType = objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClasses);
+            return objectMapper.readValue(json, javaType);
         } catch (IOException e) {
             throw new DeserializationException(e);
         }
@@ -289,17 +283,36 @@ public final class JacksonUtil {
      * 将 JSON 字符串转换为指定集合类型
      */
     public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element) {
+        return toCollection(json, collection, element, false);
+    }
+
+    public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element, boolean format) {
+        return toCollection(json, collection, element, getObjectMapper(format));
+    }
+
+    public static <C extends Collection<E>, E> C toCollection(String json, Class<C> collection, Class<E> element, final ObjectMapper objectMapper) {
         try {
-            CollectionType type = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructCollectionType(collection, element);
-            return MAPPER_WITHOUT_FORMAT.readValue(json, type);
+            CollectionType type = objectMapper.getTypeFactory().constructCollectionType(collection, element);
+            return objectMapper.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<E> failed:" + json, e);
         }
     }
 
+
     @SuppressWarnings("unchecked")
     public static <E> ArrayList<E> toCollection(String json, Class<E> element) {
-        return toCollection(json, ArrayList.class, element);
+        return toCollection(json, ArrayList.class, element, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> ArrayList<E> toCollection(String json, Class<E> element, boolean format) {
+        return toCollection(json, ArrayList.class, element, getObjectMapper(format));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> ArrayList<E> toCollection(String json, Class<E> element, final ObjectMapper objectMapper) {
+        return toCollection(json, ArrayList.class, element, objectMapper);
     }
 
     /**
@@ -311,9 +324,17 @@ public final class JacksonUtil {
      * @throws RuntimeException 如果解析失败
      */
     public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value) {
+        return toMap(json, map, key, value, false);
+    }
+
+    public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value, boolean format) {
+        return toMap(json, map, key, value, getObjectMapper(format));
+    }
+
+    public static <K, V, H extends Map<K, V>> H toMap(String json, Class<H> map, Class<K> key, Class<V> value, final ObjectMapper objectMapper) {
         try {
-            MapType type = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructMapType(map, key, value);
-            return MAPPER_WITHOUT_FORMAT.readValue(json, type);
+            MapType type = objectMapper.getTypeFactory().constructMapType(map, key, value);
+            return objectMapper.readValue(json, type);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Map<K, V> failed:" + json, e);
         }
@@ -321,17 +342,35 @@ public final class JacksonUtil {
 
     @SuppressWarnings("unchecked")
     public static <K, V> HashMap<K, V> toMap(String json, Class<K> key, Class<V> value) {
-        return toMap(json, HashMap.class, key, value);
+        return toMap(json, HashMap.class, key, value, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> HashMap<K, V> toMap(String json, Class<K> key, Class<V> value, boolean format) {
+        return toMap(json, HashMap.class, key, value, getObjectMapper(format));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> HashMap<K, V> toMap(String json, Class<K> key, Class<V> value, final ObjectMapper objectMapper) {
+        return toMap(json, HashMap.class, key, value, objectMapper);
     }
 
     /**
      * 将 JSON 字符串转换为指定集合Map类型
      */
     public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value) {
+        return toCollectionMap(json, collection, map, key, value, false);
+    }
+
+    public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value, boolean format) {
+        return toCollectionMap(json, collection, map, key, value, getObjectMapper(format));
+    }
+
+    public static <K, V, H extends Map<K, V>, C extends Collection<H>> C toCollectionMap(String json, Class<C> collection, Class<H> map, Class<K> key, Class<V> value, final ObjectMapper objectMapper) {
         try {
-            MapType mapType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructMapType(map, key, value);
-            CollectionType collectionType = MAPPER_WITHOUT_FORMAT.getTypeFactory().constructCollectionType(collection, mapType);
-            return MAPPER_WITHOUT_FORMAT.readValue(json, collectionType);
+            MapType mapType = objectMapper.getTypeFactory().constructMapType(map, key, value);
+            CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(collection, mapType);
+            return objectMapper.readValue(json, collectionType);
         } catch (Exception e) {
             throw new RuntimeException("Parse json to Collection<Map<K, V>>> failed:" + json, e);
         }
@@ -339,75 +378,76 @@ public final class JacksonUtil {
 
     @SuppressWarnings("unchecked")
     public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String json, Class<K> key, Class<V> value) {
-        return toCollectionMap(json, ArrayList.class, HashMap.class, key, value);
+        return toCollectionMap(json, ArrayList.class, HashMap.class, key, value, false);
     }
 
-    /**
-     * Register sub type for child class.
-     *
-     * @param clazz child class
-     * @param type  type name of child class
-     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String json, Class<K> key, Class<V> value, boolean format) {
+        return toCollectionMap(json, ArrayList.class, HashMap.class, key, value, getObjectMapper(format));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> ArrayList<HashMap<K, V>> toCollectionMap(String json, Class<K> key, Class<V> value, final ObjectMapper objectMapper) {
+        return toCollectionMap(json, ArrayList.class, HashMap.class, key, value, objectMapper);
+    }
+
     public static void registerSubtype(Class<?> clazz, String type) {
         registerSubtype(clazz, type, false);
     }
 
     public static void registerSubtype(Class<?> clazz, String type, boolean format) {
-        createMapper(format).registerSubtypes(new NamedType(clazz, type));
+        registerSubtype(clazz, type, getObjectMapper(format));
     }
 
-    /**
-     * Create a new empty Jackson {@link ObjectNode}.
-     *
-     * @return {@link ObjectNode}
-     */
+    public static void registerSubtype(Class<?> clazz, String type, final ObjectMapper objectMapper) {
+        objectMapper.registerSubtypes(new NamedType(clazz, type));
+    }
+
     public static ObjectNode createEmptyJsonNode() {
         return createEmptyJsonNode(false);
     }
 
     public static ObjectNode createEmptyJsonNode(boolean format) {
-        return new ObjectNode(createMapper(format).getNodeFactory());
+        return createEmptyJsonNode(getObjectMapper(format));
     }
 
+    public static ObjectNode createEmptyJsonNode(final ObjectMapper objectMapper) {
+        return new ObjectNode(objectMapper.getNodeFactory());
+    }
 
-    /**
-     * Create a new empty Jackson {@link ArrayNode}.
-     *
-     * @return {@link ArrayNode}
-     */
     public static ArrayNode createEmptyArrayNode() {
         return createEmptyArrayNode(false);
     }
 
     public static ArrayNode createEmptyArrayNode(boolean format) {
-        return new ArrayNode(createMapper(format).getNodeFactory());
+        return createEmptyArrayNode(getObjectMapper(format));
     }
 
-    /**
-     * Parse object to Jackson {@link JsonNode}.
-     *
-     * @param obj object
-     * @return {@link JsonNode}
-     */
+    public static ArrayNode createEmptyArrayNode(final ObjectMapper objectMapper) {
+        return new ArrayNode(objectMapper.getNodeFactory());
+    }
+
     public static JsonNode transferToJsonNode(Object obj) {
         return transferToJsonNode(obj, false);
     }
 
     public static JsonNode transferToJsonNode(Object obj, boolean format) {
-        return createMapper(format).valueToTree(obj);
+        return transferToJsonNode(obj, getObjectMapper(format));
     }
 
-    /**
-     * construct java type -> Jackson Java Type.
-     *
-     * @param type java type
-     * @return JavaType {@link JavaType}
-     */
+    public static JsonNode transferToJsonNode(Object obj, final ObjectMapper objectMapper) {
+        return objectMapper.valueToTree(obj);
+    }
+
     public static JavaType constructJavaType(Type type) {
         return constructJavaType(type, false);
     }
 
     public static JavaType constructJavaType(Type type, boolean format) {
-        return createMapper(format).constructType(type);
+        return constructJavaType(type, getObjectMapper(format));
+    }
+
+    public static JavaType constructJavaType(Type type, final ObjectMapper objectMapper) {
+        return objectMapper.constructType(type);
     }
 }

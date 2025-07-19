@@ -297,7 +297,7 @@ class HttpWrapper {
      */
     private static String writeValueAsString(String key, Object value) {
         try {
-            ObjectMapper objectMapper = JacksonUtil.createMapper();
+            ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write http request key [%s] to string, It is a binary data?", key), e);
@@ -309,7 +309,7 @@ class HttpWrapper {
      */
     private static String writeObjAsJson(Object requestBody) {
         try {
-            ObjectMapper objectMapper = JacksonUtil.createMapper();
+            ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
             return objectMapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write request body [%s] to json, It is a binary data?", requestBody.getClass().getSimpleName()), e);
@@ -321,7 +321,7 @@ class HttpWrapper {
      */
     private static String writeObjAsXml(Object requestBody) {
         try {
-            XmlMapper xmlMapper = JacksonXmlUtil.createMapper();
+            XmlMapper xmlMapper = JacksonXmlUtil.getXmlMapper();
             return xmlMapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write request body [%s] to xml, It is a binary data?", requestBody.getClass().getSimpleName()), e);
