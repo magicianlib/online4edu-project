@@ -13,13 +13,11 @@ import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 import com.online4edu.dependencies.utils.exception.DeserializationException;
 import com.online4edu.dependencies.utils.exception.SerializationException;
 import com.online4edu.dependencies.utils.jackson.serializer.BigDecimalAsStringJsonSerializer;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -35,19 +33,23 @@ public final class JacksonUtil {
     private static final ObjectMapper MAPPER_WITH_FORMAT = createObjectMapper(true);
     private static final ObjectMapper MAPPER_WITHOUT_FORMAT = createObjectMapper(false);
 
-    /**
-     * 获取 ObjectMapper 实例
-     */
     public static ObjectMapper getObjectMapper() {
         return getObjectMapper(false);
     }
 
+    /**
+     * 获取 ObjectMapper 实例
+     *
+     * @param format 是否开启JSON格式化
+     */
     public static ObjectMapper getObjectMapper(boolean format) {
         return format ? MAPPER_WITH_FORMAT : MAPPER_WITHOUT_FORMAT;
     }
 
     /**
      * 创建 ObjectMapper 对象
+     *
+     * @param format 是否开启JSON格式化
      */
     public static ObjectMapper createObjectMapper(boolean format) {
         ObjectMapper mapper = new ObjectMapper();
@@ -112,11 +114,7 @@ public final class JacksonUtil {
 
     public static byte[] toJsonBytes(Object obj, final ObjectMapper objectMapper) {
         try {
-            String json = objectMapper.writeValueAsString(obj);
-            if (StringUtils.isNotBlank(json)) {
-                return json.getBytes(StandardCharsets.UTF_8);
-            }
-            return new byte[0];
+            return objectMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
             throw new SerializationException(obj.getClass(), e);
         }
@@ -250,15 +248,15 @@ public final class JacksonUtil {
         }
     }
 
-    public static ObjectNode toObj(String json) {
-        return toObj(json, ObjectNode.class);
+    public static ObjectNode toObjectNode(String json) {
+        return toObjectNode(json, false);
     }
 
-    public static ObjectNode toObj(String json, boolean format) {
-        return toObj(json, ObjectNode.class, format);
+    public static ObjectNode toObjectNode(String json, boolean format) {
+        return toObjectNode(json, getObjectMapper(format));
     }
 
-    public static ObjectNode toObj(String json, final ObjectMapper objectMapper) {
+    public static ObjectNode toObjectNode(String json, final ObjectMapper objectMapper) {
         return toObj(json, ObjectNode.class, objectMapper);
     }
 
