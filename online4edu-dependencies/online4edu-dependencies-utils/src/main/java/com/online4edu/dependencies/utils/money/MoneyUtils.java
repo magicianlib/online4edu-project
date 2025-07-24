@@ -13,7 +13,7 @@ import java.util.Objects;
 public enum MoneyUtils {
     ;
 
-    public static void apportionByWeights(BigDecimal pie, List<Weight> weights) {
+    public static <T> void apportionByWeights(BigDecimal pie, List<Weight<T>> weights) {
         apportionByWeights(pie, weights, 2);
     }
 
@@ -24,7 +24,7 @@ public enum MoneyUtils {
      * @param weights 权重
      * @param scale   保留小数位数
      */
-    public static void apportionByWeights(BigDecimal pie, List<Weight> weights, int scale) {
+    public static <T> void apportionByWeights(BigDecimal pie, List<Weight<T>> weights, int scale) {
         if (Objects.isNull(pie) || CollectionUtils.isEmpty(weights)) {
             throw new RuntimeException("分摊权重未设置");
         }
@@ -39,9 +39,9 @@ public enum MoneyUtils {
             throw new RuntimeException("分摊权重未设置");
         }
 
-        Weight lastWeight = weights.get(0);
-        Weight lastNotZeroWeight = null;
-        for (Weight weight : weights) {
+        Weight<T> lastWeight = weights.get(0);
+        Weight<T> lastNotZeroWeight = null;
+        for (Weight<T> weight : weights) {
             lastWeight = weight;
 
             // DECIMAL32防止无限循环小数导致异常，小数点后2位的直接舍去
@@ -68,19 +68,19 @@ public enum MoneyUtils {
         }
     }
 
-    public static void main(String[] args) {
+    public static <T> void main(String[] args) {
 
         BigDecimal total = new BigDecimal("100");
-        ArrayList<Weight> weights = Lists.newArrayList(
-                new Weight("1", new BigDecimal("10")),
-                new Weight("2", new BigDecimal("10")),
-                new Weight("2", new BigDecimal("10")),
-                new Weight("3", new BigDecimal("10")),
-                new Weight("3", new BigDecimal("0"))
+        ArrayList<Weight<String>> weights = Lists.newArrayList(
+                new Weight<>("1", new BigDecimal("10")),
+                new Weight<>("2", new BigDecimal("10")),
+                new Weight<>("2", new BigDecimal("10")),
+                new Weight<>("3", new BigDecimal("10")),
+                new Weight<>("3", new BigDecimal("0"))
         );
 
         apportionByWeights(total, weights);
-        for (Weight weight : weights) {
+        for (Weight<String> weight : weights) {
             System.out.println(weight.getId() + " --------- " + weight.getWeight() + " --------- " + weight.getResult());
         }
 

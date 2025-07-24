@@ -7,12 +7,12 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class Weight {
-    private Object id;
+public class Weight<T> {
+    private T id;
     private BigDecimal weight;
     private BigDecimal result = BigDecimal.ZERO;
 
-    public Weight(Object id, BigDecimal weight) {
+    public Weight(T id, BigDecimal weight) {
         this.id = id;
         this.weight = weight;
     }
