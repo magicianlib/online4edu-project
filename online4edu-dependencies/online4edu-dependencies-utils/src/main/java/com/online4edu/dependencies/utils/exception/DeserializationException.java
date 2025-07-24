@@ -13,9 +13,9 @@ public class DeserializationException extends ServiceException {
 
     private static final long serialVersionUID = -6514424812979501022L;
 
-    private static final String DEFAULT_MSG = "edu deserialize failed. ";
+    private static final String DEFAULT_MSG = "deserialize failed. ";
 
-    private static final String MSG_FOR_SPECIFIED_CLASS = "edu deserialize for class [%s] failed. ";
+    private static final String MSG_FOR_SPECIFIED_CLASS = "deserialize for class [%s] failed. ";
 
     private Class<?> targetClass;
 

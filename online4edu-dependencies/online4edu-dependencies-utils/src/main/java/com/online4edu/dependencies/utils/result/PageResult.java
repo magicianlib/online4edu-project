@@ -30,7 +30,7 @@ public class PageResult<T> extends Result<Collection<T>> {
     }
 
     public void addAll(List<T> dataList) {
-        if (Objects.nonNull(dataList) && dataList.size() > 0) {
+        if (Objects.nonNull(dataList) && !dataList.isEmpty()) {
             getData().addAll(dataList);
         }
     }
