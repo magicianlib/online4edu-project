@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MoneyUtil {
+public enum MoneyUtils {
+    ;
+
     public static void apportionByWeights(BigDecimal pie, List<Weight> weights) {
         apportionByWeights(pie, weights, 2);
     }
@@ -33,7 +35,7 @@ public class MoneyUtil {
         }
 
         BigDecimal totalWeight = weights.stream().map(Weight::getWeight).reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (BigDecimalUtil.isEqZero(totalWeight)) {
+        if (BigDecimalUtils.isEqZero(totalWeight)) {
             throw new RuntimeException("分摊权重未设置");
         }
 
@@ -46,7 +48,7 @@ public class MoneyUtil {
             BigDecimal result = weight.getWeight().divide(totalWeight, MathContext.DECIMAL32).multiply(pie).setScale(scale, RoundingMode.DOWN);
             weight.setResult(result);
 
-            if (BigDecimalUtil.isNotEqZero(weight.getWeight())) {
+            if (BigDecimalUtils.isNotEqZero(weight.getWeight())) {
                 lastNotZeroWeight = weight;
             }
         }
@@ -57,7 +59,7 @@ public class MoneyUtil {
 
         // 如果最后一个权重值为0，表示该权重不参与分摊计算，将最后剩余的
         // 部分累加全部给最后一个权重不为0的数据
-        if (BigDecimalUtil.isEqZero(lastWeight.getWeight())) {
+        if (BigDecimalUtils.isEqZero(lastWeight.getWeight())) {
             if (Objects.nonNull(lastNotZeroWeight)) {
                 lastNotZeroWeight.add(residue);
             }

@@ -1,6 +1,6 @@
 package com.online4edu.dependencies.utils.result;
 
-import com.online4edu.dependencies.utils.jackson.JacksonUtil;
+import com.online4edu.dependencies.utils.jackson.JacksonUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +32,6 @@ public class Result<T> {
 
     @Override
     public String toString() {
-        return JacksonUtil.toJson(this);
+        return JacksonUtils.toJson(this);
     }
 }

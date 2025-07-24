@@ -28,7 +28,8 @@ import java.util.*;
  * @author magicianlib@gmail.com
  * @see com.fasterxml.jackson.annotation
  */
-public final class JacksonUtil {
+public enum JacksonUtils {
+    ;
 
     private static final ObjectMapper MAPPER_WITH_FORMAT = createObjectMapper(true);
     private static final ObjectMapper MAPPER_WITHOUT_FORMAT = createObjectMapper(false);

@@ -1,6 +1,6 @@
 package com.online4edu.dependencies.utils.converter;
 
-import com.online4edu.dependencies.utils.jackson.JacksonUtil;
+import com.online4edu.dependencies.utils.jackson.JacksonUtils;
 
 import java.io.Serializable;
 
@@ -16,6 +16,6 @@ public abstract class PrintFriendliness extends Convert implements Serializable 
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + ":" + JacksonUtil.toJson(this);
+        return this.getClass().getSimpleName() + ":" + JacksonUtils.toJson(this);
     }
 }

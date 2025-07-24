@@ -29,7 +29,8 @@ import java.util.TimeZone;
  * @author magicianlib@gmail.com
  * @see com.fasterxml.jackson.dataformat.xml.annotation
  */
-public class JacksonXmlUtil {
+public enum JacksonXmlUtils {
+    ;
     /**
      * 用于生成带 XML 声明的 XML
      */

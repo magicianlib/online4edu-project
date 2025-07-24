@@ -3,8 +3,8 @@ package com.online4edu.dependencies.utils.http;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.online4edu.dependencies.utils.jackson.JacksonUtil;
-import com.online4edu.dependencies.utils.jackson.JacksonXmlUtil;
+import com.online4edu.dependencies.utils.jackson.JacksonUtils;
+import com.online4edu.dependencies.utils.jackson.JacksonXmlUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Consts;
@@ -297,7 +297,7 @@ class HttpWrapper {
      */
     private static String writeValueAsString(String key, Object value) {
         try {
-            ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+            ObjectMapper objectMapper = JacksonUtils.getObjectMapper();
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write http request key [%s] to string, It is a binary data?", key), e);
@@ -309,7 +309,7 @@ class HttpWrapper {
      */
     private static String writeObjAsJson(Object requestBody) {
         try {
-            ObjectMapper objectMapper = JacksonUtil.getObjectMapper();
+            ObjectMapper objectMapper = JacksonUtils.getObjectMapper();
             return objectMapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write request body [%s] to json, It is a binary data?", requestBody.getClass().getSimpleName()), e);
@@ -321,7 +321,7 @@ class HttpWrapper {
      */
     private static String writeObjAsXml(Object requestBody) {
         try {
-            XmlMapper xmlMapper = JacksonXmlUtil.getXmlMapper();
+            XmlMapper xmlMapper = JacksonXmlUtils.getXmlMapper();
             return xmlMapper.writeValueAsString(requestBody);
         } catch (JsonProcessingException e) {
             throw new HttpException(String.format("Cannot write request body [%s] to xml, It is a binary data?", requestBody.getClass().getSimpleName()), e);

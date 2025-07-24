@@ -2,7 +2,8 @@ package com.online4edu.dependencies.utils.money;
 
 import java.math.BigDecimal;
 
-public class BigDecimalUtil {
+public enum BigDecimalUtils {
+    ;
 
     public static boolean isBiggerThan(BigDecimal source, BigDecimal compareTo) {
         if (source == null) {
