@@ -8,10 +8,22 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum MoneyUtils {
     ;
+
+    public static <T> Map<T, Weight<T>> apportionByWeightsToMap(BigDecimal pie, List<Weight<T>> weights) {
+        return apportionByWeightsToMap(pie, weights, 2);
+    }
+
+    public static <T> Map<T, Weight<T>> apportionByWeightsToMap(BigDecimal pie, List<Weight<T>> weights, int scale) {
+        apportionByWeights(pie, weights, scale);
+        return weights.stream().collect(Collectors.toMap(Weight::getId, Function.identity(), (oV, nV) -> nV));
+    }
 
     public static <T> void apportionByWeights(BigDecimal pie, List<Weight<T>> weights) {
         apportionByWeights(pie, weights, 2);
