@@ -12,6 +12,9 @@ public class Weight<T> {
     private BigDecimal weight;
     private BigDecimal result = BigDecimal.ZERO;
 
+    public Weight() {
+    }
+
     public Weight(T id, BigDecimal weight) {
         this.id = id;
         this.weight = weight;
