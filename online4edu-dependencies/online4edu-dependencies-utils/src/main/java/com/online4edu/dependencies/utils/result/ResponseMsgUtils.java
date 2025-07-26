@@ -1,18 +1,13 @@
 package com.online4edu.dependencies.utils.result;
 
-import com.online4edu.dependencies.utils.exception.SingletonCreationException;
-
 /**
  * 消息统一响应工具类
  *
  * @author magicianlib@gmail.com
  * @since 2021/03/13 17:20
  */
-public class ResponseMsgUtil {
-
-    private ResponseMsgUtil() {
-        throw new SingletonCreationException("消息统一响应工具类[ResponseMsgUtil]不允许实例化");
-    }
+public enum ResponseMsgUtils {
+    ;
 
     /**
      * 统一返回结果

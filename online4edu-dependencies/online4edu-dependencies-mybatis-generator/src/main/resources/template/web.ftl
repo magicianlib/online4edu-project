@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import ${basePackage}.domain.${domainNameUpperCamel};
 import ${basePackage}.service.${domainNameUpperCamel}Service;
-import com.online4edu.dependencies.utils.result.ResponseMsgUtil;
+import com.online4edu.dependencies.utils.result.ResponseMsgUtils;
 import com.online4edu.dependencies.utils.result.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
