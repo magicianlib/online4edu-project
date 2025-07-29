@@ -53,9 +53,6 @@ public enum ApportionUtils {
             throw new RuntimeException("分摊权重未设置");
         }
 
-        // 保留更多精度以减少累计误差
-        int extraPrecision = scale + 6;
-
         // 已分摊
         BigDecimal allocated = BigDecimal.ZERO;
         WeightedValue<T> lastNotZeroWeight = null;
