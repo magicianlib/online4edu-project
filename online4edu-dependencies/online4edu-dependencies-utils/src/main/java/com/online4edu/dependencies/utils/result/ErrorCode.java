@@ -5,10 +5,9 @@ package com.online4edu.dependencies.utils.result;
  *
  * <p>如何使用?
  * 定义一个枚举类实现该接口, 并重新 {@link #code()} 和 {@link #message()} 方法.
- *
+ * <p>
  * 示例:
- *
- * {@code
+ * <pre>
  * public enum ExampleErrorCode implements ErrorCode {
  *
  *     // 根据各自服务业务需求在这里定义扩展响应码
@@ -30,23 +29,26 @@ package com.online4edu.dependencies.utils.result;
  *         this.message = message;
  *     }
  *
- *     @Override
+ *     \@Override
  *     public int code() {
  *         return code;
  *     }
  *
- *     @Override
+ *     \@Override
  *     public String message() {
  *         return message;
  *     }
  * }
- * }
+ * </pre>
  *
  * @author magicianlib@gmail.com
- * @since 2021/04/23 15:56
  * @see BasicErrorCode
+ * @since 2021/04/23 15:56
  */
 public interface ErrorCode {
+    default boolean success() {
+        return false;
+    }
 
     /**
      * 响应码

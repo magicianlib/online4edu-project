@@ -32,6 +32,10 @@ public class Result<T> {
 
     @Override
     public String toString() {
-        return JacksonUtils.toJson(this);
+        return toString(false);
+    }
+
+    public String toString(boolean format) {
+        return JacksonUtils.toJson(this, format);
     }
 }
