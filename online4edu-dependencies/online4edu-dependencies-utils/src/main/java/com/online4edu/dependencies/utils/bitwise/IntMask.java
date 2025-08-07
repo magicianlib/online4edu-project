@@ -30,6 +30,9 @@ public interface IntMask {
     }
 
     default int set(int bitmask, boolean value) {
+        if (index() <= 0) {
+            return bitmask;
+        }
         int mask = 1 << index();
         if (value) {
             return bitmask |= mask;
@@ -38,14 +41,6 @@ public interface IntMask {
     }
 
     default boolean test(int bitmask) {
-        return get(bitmask);
-    }
-
-    default boolean get(int bitmask) {
         return (bitmask & (1 << index())) != 0;
-    }
-
-    static String binary(int bitmask) {
-        return Integer.toBinaryString(bitmask);
     }
 }

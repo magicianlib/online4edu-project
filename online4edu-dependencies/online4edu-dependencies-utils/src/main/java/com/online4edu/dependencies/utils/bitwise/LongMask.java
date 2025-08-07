@@ -30,6 +30,9 @@ public interface LongMask {
     }
 
     default long set(long bitmask, boolean value) {
+        if (index() <= 0L) {
+            return bitmask;
+        }
         long mask = 1L << index();
         if (value) {
             return bitmask | mask;
@@ -38,14 +41,6 @@ public interface LongMask {
     }
 
     default boolean test(long bitmask) {
-        return get(bitmask);
-    }
-
-    default boolean get(long bitmask) {
         return (bitmask & (1L << index())) != 0L;
-    }
-
-    static String binary(long bitmask) {
-        return Long.toBinaryString(bitmask);
     }
 }
