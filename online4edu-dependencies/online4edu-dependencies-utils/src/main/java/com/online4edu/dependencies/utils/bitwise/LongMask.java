@@ -1,6 +1,6 @@
 package com.online4edu.dependencies.utils.bitwise;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * long 二进制掩码操作
@@ -66,18 +66,18 @@ public interface LongMask {
         return (bitmask & (1L << index())) != 0L;
     }
 
-    static long clean(long bitmask, List<LongMask> masks) {
+    static long clean(long bitmask, Collection<LongMask> masks) {
         for (LongMask mask : masks) {
             bitmask = mask.clean(bitmask);
         }
         return bitmask;
     }
 
-    static long set(List<LongMask> masks) {
+    static long set(Collection<LongMask> masks) {
         return set(0L, masks);
     }
 
-    static long set(long bitmask, List<LongMask> masks) {
+    static long set(long bitmask, Collection<LongMask> masks) {
         for (LongMask mask : masks) {
             bitmask = mask.set(bitmask);
         }

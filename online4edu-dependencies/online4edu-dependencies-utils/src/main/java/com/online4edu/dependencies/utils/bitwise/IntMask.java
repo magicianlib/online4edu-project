@@ -1,6 +1,6 @@
 package com.online4edu.dependencies.utils.bitwise;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * int 二进制掩码操作
@@ -66,18 +66,18 @@ public interface IntMask {
         return (bitmask & (1 << index())) != 0;
     }
 
-    static int clean(int bitmask, List<IntMask> masks) {
+    static int clean(int bitmask, Collection<IntMask> masks) {
         for (IntMask mask : masks) {
             bitmask = mask.clean(bitmask);
         }
         return bitmask;
     }
 
-    static int set(List<IntMask> masks) {
+    static int set(Collection<IntMask> masks) {
         return set(0, masks);
     }
 
-    static int set(int bitmask, List<IntMask> masks) {
+    static int set(int bitmask, Collection<IntMask> masks) {
         for (IntMask mask : masks) {
             bitmask = mask.set(bitmask);
         }
