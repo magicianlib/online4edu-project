@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
-import com.online4edu.dependencies.utils.exception.DeserializationException;
-import com.online4edu.dependencies.utils.exception.SerializationException;
 import com.online4edu.dependencies.utils.jackson.serializer.BigDecimalAsStringJsonSerializer;
 
 import java.io.IOException;
@@ -101,7 +99,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new SerializationException(obj.getClass(), e);
+            throw new RuntimeException("Serialize " + obj.getClass().getSimpleName() + " to json failed", e);
         }
     }
 
@@ -117,7 +115,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.writeValueAsBytes(obj);
         } catch (JsonProcessingException e) {
-            throw new SerializationException(obj.getClass(), e);
+            throw new RuntimeException("Serialize " + obj.getClass().getSimpleName() + " to json-bytes failed", e);
         }
     }
 
@@ -133,7 +131,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            throw new DeserializationException(clazz, e);
+            throw new RuntimeException("Parse json-bytes to " + clazz.getSimpleName() + " failed", e);
         }
     }
 
@@ -149,7 +147,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, objectMapper.constructType(type));
         } catch (IOException e) {
-            throw new DeserializationException(e);
+            throw new RuntimeException("Parse json-bytes to " + type.getTypeName() + " failed", e);
         }
     }
 
@@ -165,7 +163,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(inputStream, clazz);
         } catch (IOException e) {
-            throw new DeserializationException(e);
+            throw new RuntimeException("Parse inputStream to " + clazz.getSimpleName() + " failed", e);
         }
     }
 
@@ -181,7 +179,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (IOException e) {
-            throw new DeserializationException(typeReference.getClass(), e);
+            throw new RuntimeException("Parse json-bytes to " + typeReference.getType().getTypeName() + " failed", e);
         }
     }
 
@@ -197,7 +195,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
-            throw new DeserializationException(clazz, e);
+            throw new RuntimeException("Parse json to " + clazz.getSimpleName() + " failed: " + json, e);
         }
     }
 
@@ -213,7 +211,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, objectMapper.constructType(type));
         } catch (IOException e) {
-            throw new DeserializationException(e);
+            throw new RuntimeException("Parse json to " + type.getTypeName() + " failed: " + json, e);
         }
     }
 
@@ -229,7 +227,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(json, typeReference);
         } catch (IOException e) {
-            throw new DeserializationException(typeReference.getClass(), e);
+            throw new RuntimeException("Parse json to " + typeReference.getType().getTypeName() + " failed: " + json, e);
         }
     }
 
@@ -245,7 +243,7 @@ public enum JacksonUtils {
         try {
             return objectMapper.readValue(inputStream, objectMapper.constructType(type));
         } catch (IOException e) {
-            throw new DeserializationException(type, e);
+            throw new RuntimeException("Parse inputStream to " + type.getTypeName() + " failed", e);
         }
     }
 
@@ -270,11 +268,11 @@ public enum JacksonUtils {
     }
 
     public static <T> T toObj(String json, final ObjectMapper objectMapper, Class<T> parametrized, Class<?>... parameterClasses) {
+        JavaType javaType = objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClasses);
         try {
-            JavaType javaType = objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClasses);
             return objectMapper.readValue(json, javaType);
         } catch (IOException e) {
-            throw new DeserializationException(e);
+            throw new RuntimeException("Parse json to " + javaType.getTypeName() + " failed: " + json, e);
         }
     }
 
