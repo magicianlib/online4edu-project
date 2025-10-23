@@ -1,22 +1,16 @@
 package com.online4edu.dependencies.utils.jackson;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.online4edu.dependencies.utils.datetime.DateFormatUtil;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 /**
  * Jackson Config
@@ -32,22 +26,30 @@ public final class JacksonConfig {
      * @param objectMapper 实例
      */
     public static void configureObjectMapper4Jsr310(ObjectMapper objectMapper) {
+        objectMapper.registerModule(new JavaTimeModule());
 
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // 禁用 JSR310 将日期时间写为时间戳的特性 默认行为，必须禁用才能使用后面的字符串格式
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        // LocalTime 序列化和反序列化配置 HH:mm:ss
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateFormatUtil.ISO_LOCAL_TIME));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateFormatUtil.ISO_LOCAL_TIME));
+        // LocalTime 序列化和反序列化配置
+        JsonFormat.Value localTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
+        objectMapper.configOverride(LocalTime.class).setFormat(localTimeFormat);
 
-        // LocalDate 序列化和反序列化配置 yyyy-MM-dd
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateFormatUtil.ISO_LOCAL_DATE));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateFormatUtil.ISO_LOCAL_DATE));
+        // LocalDate 序列化和反序列化配置
+        JsonFormat.Value localDateFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_DATE_PATTERN);
+        objectMapper.configOverride(LocalDate.class).setFormat(localDateFormat);
 
-        // LocalDateTime 序列化和反序列化配置 yyyy-MM-dd HH:mm:ss
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateFormatUtil.DATE_TIME));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateFormatUtil.DATE_TIME));
+        // LocalDateTime 序列化和反序列化配置
+        JsonFormat.Value localDateTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
+        objectMapper.configOverride(LocalDateTime.class).setFormat(localDateTimeFormat);
 
-        objectMapper.registerModule(javaTimeModule);
+        // OffsetDateTime 序列化和反序列化配置
+        JsonFormat.Value offsetDateTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
+        objectMapper.configOverride(OffsetDateTime.class).setFormat(offsetDateTimeFormat);
+
+        // OffsetTime 序列化和反序列化配置
+        JsonFormat.Value offsetTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
+        objectMapper.configOverride(OffsetTime.class).setFormat(offsetTimeFormat);
     }
 
     /**
