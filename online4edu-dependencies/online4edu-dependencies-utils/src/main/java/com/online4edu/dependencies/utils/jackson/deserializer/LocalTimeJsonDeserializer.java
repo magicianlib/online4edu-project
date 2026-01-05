@@ -18,6 +18,6 @@ public class LocalTimeJsonDeserializer extends JsonDeserializer<LocalTime> {
 
     @Override
     public LocalTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        return LocalTime.parse(parser.getText(), DateFormatUtil.ISO_LOCAL_TIME);
+        return LocalTime.parse(parser.getText(), DateFormatUtil.ISO_LOCAL_TIME_FORMATTER);
     }
 }

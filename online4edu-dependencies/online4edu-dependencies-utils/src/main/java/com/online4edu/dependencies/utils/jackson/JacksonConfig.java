@@ -31,25 +31,31 @@ public final class JacksonConfig {
         // 禁用 JSR310 将日期时间写为时间戳的特性 默认行为，必须禁用才能使用后面的字符串格式
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        // LocalTime 序列化和反序列化配置
-        JsonFormat.Value localTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
-        objectMapper.configOverride(LocalTime.class).setFormat(localTimeFormat);
-
-        // LocalDate 序列化和反序列化配置
-        JsonFormat.Value localDateFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_DATE_PATTERN);
-        objectMapper.configOverride(LocalDate.class).setFormat(localDateFormat);
-
-        // LocalDateTime 序列化和反序列化配置
-        JsonFormat.Value localDateTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
-        objectMapper.configOverride(LocalDateTime.class).setFormat(localDateTimeFormat);
-
-        // OffsetDateTime 序列化和反序列化配置
-        JsonFormat.Value offsetDateTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
-        objectMapper.configOverride(OffsetDateTime.class).setFormat(offsetDateTimeFormat);
-
-        // OffsetTime 序列化和反序列化配置
-        JsonFormat.Value offsetTimeFormat = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
-        objectMapper.configOverride(OffsetTime.class).setFormat(offsetTimeFormat);
+        {
+            // LocalTime 序列化和反序列化配置
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
+            objectMapper.configOverride(LocalTime.class).setFormat(format);
+        }
+        {
+            // LocalDate 序列化和反序列化配置
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_DATE_PATTERN);
+            objectMapper.configOverride(LocalDate.class).setFormat(format);
+        }
+        {
+            // LocalDateTime 序列化和反序列化配置
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
+            objectMapper.configOverride(LocalDateTime.class).setFormat(format);
+        }
+        {
+            // OffsetDateTime 序列化和反序列化配置
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_ZONE_PATTERN);
+            objectMapper.configOverride(OffsetDateTime.class).setFormat(format);
+        }
+        {
+            // OffsetTime 序列化和反序列化配置
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.TIME_ZONE_PATTERN);
+            objectMapper.configOverride(OffsetTime.class).setFormat(format);
+        }
     }
 
     /**
