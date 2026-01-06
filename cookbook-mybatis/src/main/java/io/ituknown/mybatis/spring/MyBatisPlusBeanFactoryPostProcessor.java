@@ -1,0 +1,32 @@
+package io.ituknown.mybatis.spring;
+
+import io.ituknown.mybatis.mapper.BaseMapper;
+import io.ituknown.mybatis.service.BaseService;
+import io.ituknown.mybatis.service.BaseServiceImpl;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+
+/**
+ * Bean 工厂后置处理器, 根据 Bean 类型自动完成依赖注入.
+ * <p>
+ * 将该后置处理器注入 Spring, 不需要在 {@link BaseServiceImpl#setBaseMapper(BaseMapper)}
+ * 上增加 {@link org.springframework.beans.factory.annotation.Autowired} 注解
+ *
+ * @author magicianlib@gmail.com
+ * @since 2021/03/15 10:12
+ * @see BaseServiceImpl#setBaseMapper(BaseMapper)
+ */
+public class MyBatisPlusBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        String[] beanNamesForType = beanFactory.getBeanNamesForType(BaseService.class);
+        for (String beanName : beanNamesForType) {
+            GenericBeanDefinition beanDefinition = (GenericBeanDefinition) beanFactory.getBeanDefinition(beanName);
+            beanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        }
+    }
+}

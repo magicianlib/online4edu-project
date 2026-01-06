@@ -1,0 +1,4 @@
+io.ituknown.mybatis.generator.core.DomainAndMapperGenerator
+io.ituknown.mybatis.generator.core.ServiceGenerator
+io.ituknown.mybatis.generator.core.VOGenerator
+io.ituknown.mybatis.generator.core.WebGenerator

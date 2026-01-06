@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <groupId>com.online4edu</groupId>
-    <artifactId>online4edu-project</artifactId>
+    <groupId>io.ituknown</groupId>
+    <artifactId>java-cookbook</artifactId>
     <version>${revision}</version>
     <modules>
-        <module>online4edu-dependencies</module>
-        <module>online4edu-app</module>
-        <module>online4edu-api</module>
+        <module>cookbook-mybatis</module>
+        <module>cookbook-mybatis-generator</module>
+        <module>cookbook-utils</module>
+        <module>cookbook-performance</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
-    <name>online4edu-project</name>
+    <name>java-cookbook</name>
 
     <properties>
-        <revision>0.0.2-SNAPSHOT</revision>
+        <revision>0.0.3-SNAPSHOT</revision>
 
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -95,23 +96,23 @@
 
             <!-- ====================================== Project Dependencies ========================================-->
             <dependency>
-                <groupId>com.online4edu</groupId>
-                <artifactId>online4edu-dependencies</artifactId>
+                <groupId>io.ituknown</groupId>
+                <artifactId>cookbook-mybatis</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.online4edu</groupId>
-                <artifactId>online4edu-dependencies-mybatis</artifactId>
+                <groupId>io.ituknown</groupId>
+                <artifactId>cookbook-mybatis-generator</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.online4edu</groupId>
-                <artifactId>online4edu-dependencies-utils</artifactId>
+                <groupId>io.ituknown</groupId>
+                <artifactId>cookbook-performance</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.online4edu</groupId>
-                <artifactId>online4edu-dependencies-mybatis-generator</artifactId>
+                <groupId>io.ituknown</groupId>
+                <artifactId>cookbook-utils</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- ========================================== Project APT =============================================-->
