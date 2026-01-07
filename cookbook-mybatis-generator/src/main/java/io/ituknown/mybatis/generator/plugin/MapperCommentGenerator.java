@@ -133,7 +133,7 @@ public class MapperCommentGenerator implements CommentGenerator {
         }
 
         // 实体类继承 Convert
-        topLevelClass.addImportedType(new FullyQualifiedJavaType("com.online4edu.dependencies.utils.converter.Convert"));
+        topLevelClass.addImportedType(new FullyQualifiedJavaType("io.ituknown.utils.converter.Convert"));
         topLevelClass.setSuperClass(new FullyQualifiedJavaType("Convert"));
     }
 

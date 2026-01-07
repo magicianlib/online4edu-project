@@ -73,8 +73,8 @@ public class CodeGeneratorUtil {
         System.out.println("============= 在使用时需要在所属项目中增加如下 maven 依赖 =============");
         System.out.println();
         System.out.println("<dependency>");
-        System.out.println("    <groupId>com.online4edu</groupId>");
-        System.out.println("    <artifactId>online4edu-dependencies</artifactId>");
+        System.out.println("    <groupId>io.ituknown</groupId>");
+        System.out.println("    <artifactId>...</artifactId>");
         System.out.println("</dependency>");
     }
 

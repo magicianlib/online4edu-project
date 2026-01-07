@@ -38,7 +38,7 @@ public class ProjectProperties {
     /**
      * Mapper 基础继承接口
      */
-    public static String BASE_MAPPER_INTERFACE = "com.online4edu.dependencies.mybatis.mapper.BaseMapper";
+    public static String BASE_MAPPER_INTERFACE = "io.ituknown.mybatis.mapper.BaseMapper";
 
     private ProjectProperties() {
     }

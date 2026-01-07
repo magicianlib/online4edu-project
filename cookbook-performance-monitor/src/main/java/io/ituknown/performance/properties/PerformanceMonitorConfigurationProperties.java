@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,13 +21,13 @@ public class PerformanceMonitorConfigurationProperties {
      * 应用名称
      */
     @NotBlank
-    private String appId = "trading.iapi.online4edu.cn";
+    private String appId = "trading.iapi.ituknown.io";
 
     /**
      * 上报服务器地址
      */
     @NotBlank
-    private String serverUrl = "performance-monitor.online4edu.cn";
+    private String serverUrl = "performance-monitor.ituknown.io";
 
     /**
      * 切点表达式
