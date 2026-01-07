@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.SerializerFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.ituknown.utils.datetime.DateFormatUtil;
+import io.ituknown.utils.datetime.DateFormatUtils;
 
 import java.time.*;
 
@@ -33,27 +33,27 @@ public final class JacksonConfig {
 
         {
             // LocalTime 序列化和反序列化配置
-            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_TIME_PATTERN);
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtils.ISO_LOCAL_TIME_PATTERN);
             objectMapper.configOverride(LocalTime.class).setFormat(format);
         }
         {
             // LocalDate 序列化和反序列化配置
-            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.ISO_LOCAL_DATE_PATTERN);
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtils.ISO_LOCAL_DATE_PATTERN);
             objectMapper.configOverride(LocalDate.class).setFormat(format);
         }
         {
             // LocalDateTime 序列化和反序列化配置
-            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_PATTERN);
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtils.DATE_TIME_PATTERN);
             objectMapper.configOverride(LocalDateTime.class).setFormat(format);
         }
         {
             // OffsetDateTime 序列化和反序列化配置
-            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.DATE_TIME_ZONE_PATTERN);
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtils.DATE_TIME_ZONE_PATTERN);
             objectMapper.configOverride(OffsetDateTime.class).setFormat(format);
         }
         {
             // OffsetTime 序列化和反序列化配置
-            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtil.TIME_ZONE_PATTERN);
+            JsonFormat.Value format = JsonFormat.Value.forShape(JsonFormat.Shape.STRING).withPattern(DateFormatUtils.TIME_ZONE_PATTERN);
             objectMapper.configOverride(OffsetTime.class).setFormat(format);
         }
     }

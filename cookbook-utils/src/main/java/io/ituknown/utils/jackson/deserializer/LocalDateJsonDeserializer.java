@@ -3,7 +3,7 @@ package io.ituknown.utils.jackson.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import io.ituknown.utils.datetime.DateFormatUtil;
+import io.ituknown.utils.datetime.DateFormatUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,6 +17,6 @@ import java.time.LocalDate;
 public class LocalDateJsonDeserializer extends JsonDeserializer<LocalDate> {
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        return LocalDate.parse(parser.getText(), DateFormatUtil.ISO_LOCAL_DATE_FORMATTER);
+        return LocalDate.parse(parser.getText(), DateFormatUtils.ISO_LOCAL_DATE_FORMATTER);
     }
 }

@@ -12,7 +12,7 @@ import java.util.Locale;
  * @author magicianlib@gmail.com
  * @since 2023/09/26 15:27
  */
-public final class DateFormatUtil {
+public final class DateFormatUtils {
 
     /**
      * ISO8601 规范
@@ -65,6 +65,10 @@ public final class DateFormatUtil {
         return (simplify ? SIMPLIFY_TIMESTAMP_FORMATTER : TIMESTAMP_FORMATTER).format(temporal);
     }
 
+    public static String timestamp(boolean simplify) {
+        return timestamp(LocalDateTime.now(), simplify);
+    }
+
     public static String timestamp() {
         return timestamp(LocalDateTime.now(), false);
     }
@@ -76,6 +80,10 @@ public final class DateFormatUtil {
      */
     public static String date(LocalDate date, boolean simplify) {
         return (simplify ? LOCAL_DATE_FORMATTER : SIMPLIFY_LOCAL_DATE_FORMATTER).format(date);
+    }
+
+    public static String date(boolean simplify) {
+        return date(LocalDate.now(), simplify);
     }
 
     public static String date() {

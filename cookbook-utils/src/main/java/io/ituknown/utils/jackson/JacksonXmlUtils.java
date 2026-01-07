@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import io.ituknown.utils.datetime.DateFormatUtil;
+import io.ituknown.utils.datetime.DateFormatUtils;
 import io.ituknown.utils.exception.DeserializationException;
 import io.ituknown.utils.exception.SerializationException;
 import io.ituknown.utils.jackson.serializer.BigDecimalAsStringJsonSerializer;
@@ -91,7 +91,7 @@ public enum JacksonXmlUtils {
         mapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
 
         // java.util.Date 日期格式 处理
-        mapper.setDateFormat(new SimpleDateFormat(DateFormatUtil.DATE_TIME_PATTERN));
+        mapper.setDateFormat(new SimpleDateFormat(DateFormatUtils.DATE_TIME_PATTERN));
 
         // java.time.* 日期格式处理
         JacksonConfig.configureObjectMapper4Jsr310(mapper);

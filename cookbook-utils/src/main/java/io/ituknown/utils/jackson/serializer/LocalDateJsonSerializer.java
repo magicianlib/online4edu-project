@@ -3,7 +3,7 @@ package io.ituknown.utils.jackson.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import io.ituknown.utils.datetime.DateFormatUtil;
+import io.ituknown.utils.datetime.DateFormatUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,6 +18,6 @@ public class LocalDateJsonSerializer extends JsonSerializer<LocalDate> {
     
     @Override
     public void serialize(LocalDate date, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        gen.writeString(date.format(DateFormatUtil.ISO_LOCAL_DATE_FORMATTER));
+        gen.writeString(date.format(DateFormatUtils.ISO_LOCAL_DATE_FORMATTER));
     }
 }
